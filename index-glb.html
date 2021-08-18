@@ -22,13 +22,29 @@
         align-items: center;
       }
     </style>
+    <script
+      type="module"
+      src="https://unpkg.com/@google/model-viewer/dist/model-viewer.js"
+    ></script>
+    <script
+      nomodule
+      src="https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js"
+    ></script>
   </head>
   <body>
     <div class="container">
-      <a
+      <!-- <a
         href="intent://arvr.google.com/scene-viewer/1.0?file=https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Avocado/glTF/Avocado.gltf&mode=ar_preferred#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=https://developers.google.com/ar;end;"
         >Avocado</a
-      >
+      > -->
+      <model-viewer
+        src="https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Avocado/glTF/Avocado.gltf"
+        ar
+        alt="A 3D model of an astronaut"
+        auto-rotate
+        camera-controls
+        background-color="#455A64"
+      ></model-viewer>
     </div>
   </body>
 </html>
