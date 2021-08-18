@@ -5,10 +5,28 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
+    <style>
+      body {
+        height: 100vh;
+        width: 100vw;
+        overflow: hidden;
+      }
+      .container {
+        background-color: gray;
+        height: 100%;
+        width: 100%;
+        /* overflow: hidden; */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+    </style>
   </head>
   <body>
-    <a href="./models/Adidas_Gazelle.usdz" rel="ar">
-      <img src="./images/shoe.png" />
-    </a>
+    <div class="container">
+      <a href="./models/Adidas_Gazelle.usdz" rel="ar">
+        <img src="./images/block.png" width="70px" />
+      </a>
+    </div>
   </body>
 </html>
