@@ -10,7 +10,7 @@
         height: 100vh;
         width: 100vw;
         overflow: hidden;
-        background-color: gray;
+        /* background-color: gray; */
       }
       .container {
         /* background-color: gray; */
@@ -32,19 +32,14 @@
     ></script>
   </head>
   <body>
-    <div class="container">
-      <!-- <a
-        href="intent://arvr.google.com/scene-viewer/1.0?file=https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Avocado/glTF/Avocado.gltf&mode=ar_preferred#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=https://developers.google.com/ar;end;"
-        >Avocado</a
-      > -->
-      <model-viewer
-        src="https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Avocado/glTF/Avocado.gltf"
-        ar
-        alt="A 3D model of an astronaut"
-        auto-rotate
-        camera-controls
-        background-color="#455A64"
-      ></model-viewer>
-    </div>
+    <model-viewer
+      src="intent://arvr.google.com/scene-viewer/1.0?mode=ar_preferred${u}&file=${v}#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=${g};end;"
+      https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Avocado/glTF/Avocado.gltf"
+      ar
+      alt="A 3D model of an astronaut"
+      auto-rotate
+      camera-controls
+      background-color="#455A64"
+    ></model-viewer>
   </body>
 </html>
