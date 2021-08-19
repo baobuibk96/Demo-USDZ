@@ -37,7 +37,7 @@
 
   <body>
     <div id="info">
-      <h1 class="text-xl uppercase"> Demo AR 2</h1>
+      <h1 class="text-xl uppercase"> Demo AR 3</h1>
       
       <div class="flex">
         <div class="flex mx-auto items-start">
@@ -228,7 +228,7 @@
         //   shadowMesh.scale.setScalar(2);
           scene.add(mesh);
 
-          createExportLink();
+          await createExportLink(gltf.scene);
         });
 
         const controls = new OrbitControls(camera, renderer.domElement);
@@ -242,10 +242,10 @@
         window.addEventListener("resize", onWindowResize);
       }
 
-      async function createExportLink() {
+      async function createExportLink(model) {
         // USDZ
         const exporter = new USDZExporter();
-        const arraybuffer = await exporter.parse(carModel);
+        const arraybuffer = await exporter.parse(model || carModel);
         const blob = new Blob([arraybuffer], {
         type: "application/octet-stream",
         });
