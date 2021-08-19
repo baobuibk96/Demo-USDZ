@@ -158,11 +158,11 @@
         }
         // loader.load("DamagedHelmet.gltf", async function (gltf) {
         loader.load("ferrari.glb", async function (gltf) {
-            carModel = gltf.scene.children[ 0 ];
-
-            carModel.getObjectByName( 'body' ).material = bodyMaterial;
-            carModel.getObjectByName( 'trim' ).material = detailsMaterial;
-            carModel.getObjectByName( 'glass' ).material = glassMaterial;
+            carModel = gltf.scene;
+            const children = carModel.children[ 0 ];
+            children.getObjectByName( 'body' ).material = bodyMaterial;
+            children.getObjectByName( 'trim' ).material = detailsMaterial;
+            children.getObjectByName( 'glass' ).material = glassMaterial;
 
             // normalWheel = [
             //     carModel.getObjectByName( 'wheel_fl' ).children.slice(),
@@ -209,7 +209,7 @@
             // } );
 
         //   scene.add(gltf.scene);
-          scene.add(carModel);
+          scene.add(gltf.scene);
 
           // shadow
           const shadow = new THREE.TextureLoader().load( 'images/ferrari_ao.png' )
