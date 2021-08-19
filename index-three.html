@@ -49,7 +49,7 @@
     </div>
     </div>
 
-    <a id="link" rel="ar" href="" download="asset.usdz">
+    <a id="link" rel="ar" href="" download="asset.usdz" style="visibility: hidden;">
       <img id="button" width="100" src="images/arkit.png" />
     </a>
 
@@ -157,12 +157,12 @@
             });
         }
         // loader.load("DamagedHelmet.gltf", async function (gltf) {
-        loader.load("ferrari.glb", async function (gltf) {
-            // carModel = gltf.scene;
-            // const children = carModel.children[ 0 ];
-            // children.getObjectByName( 'body' ).material = bodyMaterial;
-            // children.getObjectByName( 'trim' ).material = detailsMaterial;
-            // children.getObjectByName( 'glass' ).material = glassMaterial;
+        loader.load("ferrari.glb", function (gltf) {
+            carModel = gltf.scene.clone();
+            const children = carModel.children[ 0 ];
+            children.getObjectByName( 'body' ).material = bodyMaterial;
+            children.getObjectByName( 'trim' ).material = detailsMaterial;
+            children.getObjectByName( 'glass' ).material = glassMaterial;
 
             // normalWheel = [
             //     carModel.getObjectByName( 'wheel_fl' ).children.slice(),
@@ -209,7 +209,7 @@
             // } );
 
         //   scene.add(gltf.scene);
-          scene.add(gltf.scene);
+          scene.add(carModel);
 
           // shadow
         //   const shadow = new THREE.TextureLoader().load( 'images/ferrari_ao.png' )
@@ -228,7 +228,7 @@
         //   shadowMesh.scale.setScalar(2);
         //   scene.add(mesh);
 
-          await createExportLink(gltf.scene);
+          createExportLink(carModel);
         });
 
         const controls = new OrbitControls(camera, renderer.domElement);
