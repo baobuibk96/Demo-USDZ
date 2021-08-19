@@ -37,7 +37,7 @@
 
   <body>
     <div id="info">
-      <h1 class="text-xl uppercase"> Demo AR 5</h1>
+      <h1 class="text-xl uppercase"> Demo AR 6</h1>
       
       <div class="flex">
         <div class="flex mx-auto items-start">
@@ -250,7 +250,8 @@
         const exporter = new USDZExporter();
         const arraybuffer = await exporter.parse(model || carModel);
         const blob = new Blob([arraybuffer], {
-        type: "application/octet-stream",
+            // type: "application/octet-stream",
+            type: 'model/vnd.usd+zip'
         });
         link.href = URL.createObjectURL(blob);
         link.style.visibility = "visible";
