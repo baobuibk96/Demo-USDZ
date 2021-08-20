@@ -37,7 +37,7 @@
 
   <body>
     <div id="info">
-      <h1 class="text-xl uppercase"> Demo AR 16</h1>
+      <h1 class="text-xl uppercase"> Demo AR 17</h1>
       
       <div class="flex">
         <div class="flex mx-auto items-start">
@@ -86,6 +86,8 @@
         renderer.setAnimationLoop( render );
         document.body.appendChild(renderer.domElement);
 
+        window.addEventListener("resize", onWindowResize);
+
         camera = new THREE.PerspectiveCamera(
           40,
           window.innerWidth / window.innerHeight,
@@ -94,6 +96,10 @@
         );
         // camera.position.set(-2.5, 0.6, 3.0);
         camera.position.set( 4.25, 1.4, - 4.5 );
+
+        controls = new OrbitControls( camera, container );
+				controls.target.set( 0, 0.5, 0 );
+				controls.update();
 
         const pmremGenerator = new THREE.PMREMGenerator(renderer);
 
@@ -165,54 +171,54 @@
         // loader.load("DamagedHelmet.gltf", async function (gltf) {
         loader.load("ferrari.glb", async function (gltf) {
             carModel = gltf.scene.clone();
-            const children = carModel.children[ 0 ];
-            children.getObjectByName( 'body' ).material = bodyMaterial;
-            children.getObjectByName( 'trim' ).material = detailsMaterial;
-            children.getObjectByName( 'glass' ).material = glassMaterial;
+            // const children = carModel.children[ 0 ];
+            // children.getObjectByName( 'body' ).material = bodyMaterial;
+            // children.getObjectByName( 'trim' ).material = detailsMaterial;
+            // children.getObjectByName( 'glass' ).material = glassMaterial;
 
-            normalWheel = [
-                carModel.getObjectByName( 'wheel_fl' ).children.slice(),
-                carModel.getObjectByName( 'wheel_fr' ).children.slice(),
-                carModel.getObjectByName( 'wheel_rl' ).children.slice(),
-                carModel.getObjectByName( 'wheel_rr' ).children.slice(),
-            ]
+            // normalWheel = [
+            //     carModel.getObjectByName( 'wheel_fl' ).children.slice(),
+            //     carModel.getObjectByName( 'wheel_fr' ).children.slice(),
+            //     carModel.getObjectByName( 'wheel_rl' ).children.slice(),
+            //     carModel.getObjectByName( 'wheel_rr' ).children.slice(),
+            // ]
 
-            const buttonChangeWheel = document.getElementById( 'change-wheel' );
-            buttonChangeWheel.addEventListener( 'click', async function () {
-                count++
-                const url = listWheels[count % listWheels.length]
-                if(url === "normal") {
-                    carModel.getObjectByName( 'wheel_fl' ).clear()
-                    normalWheel[0].forEach(item => carModel.getObjectByName( 'wheel_fl' ).add(item.clone()))
-                    carModel.getObjectByName( 'wheel_rl' ).clear()
-                    normalWheel[2].forEach(item => carModel.getObjectByName( 'wheel_rl' ).add(item.clone()))
-                    carModel.getObjectByName( 'wheel_fr' ).clear()
-                    normalWheel[1].forEach(item => carModel.getObjectByName( 'wheel_fr' ).add(item.clone()))
-                    carModel.getObjectByName( 'wheel_rr' ).clear()
-                    normalWheel[3].forEach(item => carModel.getObjectByName( 'wheel_rr' ).add(item.clone()))
+            // const buttonChangeWheel = document.getElementById( 'change-wheel' );
+            // buttonChangeWheel.addEventListener( 'click', async function () {
+            //     count++
+            //     const url = listWheels[count % listWheels.length]
+            //     if(url === "normal") {
+            //         carModel.getObjectByName( 'wheel_fl' ).clear()
+            //         normalWheel[0].forEach(item => carModel.getObjectByName( 'wheel_fl' ).add(item.clone()))
+            //         carModel.getObjectByName( 'wheel_rl' ).clear()
+            //         normalWheel[2].forEach(item => carModel.getObjectByName( 'wheel_rl' ).add(item.clone()))
+            //         carModel.getObjectByName( 'wheel_fr' ).clear()
+            //         normalWheel[1].forEach(item => carModel.getObjectByName( 'wheel_fr' ).add(item.clone()))
+            //         carModel.getObjectByName( 'wheel_rr' ).clear()
+            //         normalWheel[3].forEach(item => carModel.getObjectByName( 'wheel_rr' ).add(item.clone()))
 
-                    return;
-                }
-                const gltfData = await modelLoader(listWheels[count % listWheels.length])
+            //         return;
+            //     }
+            //     const gltfData = await modelLoader(listWheels[count % listWheels.length])
                 
-                const newWheel = gltfData.scene
-                newWheel.children.map(item => {
-                    item.position.set(0, 0, 0)
-                })
+            //     const newWheel = gltfData.scene
+            //     newWheel.children.map(item => {
+            //         item.position.set(0, 0, 0)
+            //     })
                 
-                const newWheelFlip = newWheel.clone()
-                .rotateY(180 * (Math.PI/180))
-                carModel.getObjectByName( 'wheel_fl' ).clear()
-                carModel.getObjectByName( 'wheel_fl' ).add(newWheelFlip.clone())
-                carModel.getObjectByName( 'wheel_rl' ).clear()
-                carModel.getObjectByName( 'wheel_rl' ).add(newWheelFlip.clone())
-                carModel.getObjectByName( 'wheel_fr' ).clear()
-                carModel.getObjectByName( 'wheel_fr' ).add(newWheel.clone())
-                carModel.getObjectByName( 'wheel_rr' ).clear()
-                carModel.getObjectByName( 'wheel_rr' ).add(newWheel.clone())
+            //     const newWheelFlip = newWheel.clone()
+            //     .rotateY(180 * (Math.PI/180))
+            //     carModel.getObjectByName( 'wheel_fl' ).clear()
+            //     carModel.getObjectByName( 'wheel_fl' ).add(newWheelFlip.clone())
+            //     carModel.getObjectByName( 'wheel_rl' ).clear()
+            //     carModel.getObjectByName( 'wheel_rl' ).add(newWheelFlip.clone())
+            //     carModel.getObjectByName( 'wheel_fr' ).clear()
+            //     carModel.getObjectByName( 'wheel_fr' ).add(newWheel.clone())
+            //     carModel.getObjectByName( 'wheel_rr' ).clear()
+            //     carModel.getObjectByName( 'wheel_rr' ).add(newWheel.clone())
 
-                await createExportLink();
-            } );
+            //     await createExportLink();
+            // } );
 
         //   scene.add(gltf.scene);
           scene.add(carModel);
@@ -243,15 +249,15 @@
             await createExportLink(carModel)
         });
 
-        const controls = new OrbitControls(camera, renderer.domElement);
+        // const controls = new OrbitControls(camera, renderer.domElement);
         // controls.addEventListener("change", render); // use if there is no animation loop
         // controls.minDistance = 2;
         // controls.maxDistance = 10;
         // controls.target.set(0, -0.15, -0.2);
-        controls.target.set( 0, 0.5, 0 );
-        controls.update();
+        // controls.target.set( 0, 0.5, 0 );
+        // controls.update();
 
-        window.addEventListener("resize", onWindowResize);
+        // window.addEventListener("resize", onWindowResize);
       }
 
       async function createExportLink(model) {
