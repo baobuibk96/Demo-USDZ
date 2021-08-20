@@ -37,7 +37,7 @@
 
   <body>
     <div id="info">
-      <h1 class="text-xl uppercase"> Demo AR 11</h1>
+      <h1 class="text-xl uppercase"> Demo AR 12</h1>
       
       <div class="flex">
         <div class="flex mx-auto items-start">
@@ -139,6 +139,12 @@
             createExportLink();
         } );
 
+        setTimeout(() => {
+            bodyMaterial.color.set( "#0062ff" );
+            console.log('vao 3');
+            createExportLink()
+        }, 10000)
+
         const dracoLoader = new DRACOLoader();
         dracoLoader.setDecoderPath(
         //   "./node_modules/three/examples/js/libs/draco/gltf/"
@@ -232,9 +238,9 @@
         //   createExportLink();
             // createExportLink();
 
-            bodyMaterial.color.set( "#0062ff" );
-            console.log('vao 2');
-            await createExportLink()
+            // bodyMaterial.color.set( "#0062ff" );
+            // console.log('vao 2');
+            // await createExportLink()
         });
 
         const controls = new OrbitControls(camera, renderer.domElement);
