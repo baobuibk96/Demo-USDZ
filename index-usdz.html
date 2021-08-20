@@ -8,15 +8,24 @@
       content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
     />
     <link type="text/css" rel="stylesheet" href="css/main.css" />
+    <link
+      href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
     <style>
       body {
-        background-color: #eee;
+        color: #444;
+        background: #eee;
+      }
+      a {
+        color: #08f;
+      }
+      .colorPicker {
+        display: inline-block;
+        margin: 0 10px;
       }
       #info {
         color: #222;
-      }
-      a {
-        color: #00f;
       }
       #button {
         position: absolute;
@@ -28,15 +37,16 @@
 
   <body>
     <div id="info">
-      <a href="https://threejs.org" target="_blank" rel="noopener">three.js</a>
-      - USDZ exporter 2<br />
-      Battle Damaged Sci-fi Helmet by
-      <a
-        href="https://sketchfab.com/theblueturtle_"
-        target="_blank"
-        rel="noopener"
-        >theblueturtle_</a
-      >
+        <h1 class="text-xl uppercase"> Demo AR 1</h1>
+      
+        <div class="flex">
+          <div class="flex mx-auto items-start">
+              <span class="colorPicker"><input id="body-color" type="color" value="#ff0000"></input><br/>Body</span>
+              <span class="colorPicker"><input id="details-color" type="color" value="#ffffff"></input><br/>Details</span>
+              <span class="colorPicker"><input id="glass-color" type="color" value="#ffffff"></input><br/>Glass</span>
+              <button id="change-wheel" class="border border-gray-500 rounded-md p-1 bg-white">Change Wheel</button>
+          </div>
+        </div>
     </div>
 
     <a id="link" rel="ar" href="" download="asset.usdz">
@@ -85,6 +95,41 @@
           new RoomEnvironment(),
           0.04
         ).texture;
+
+        // materials
+        const bodyMaterial = new THREE.MeshPhysicalMaterial( {
+            color: 0xff0000, metalness: 0.6, roughness: 0.4, clearcoat: 0.05, clearcoatRoughness: 0.05
+        } );
+
+        const detailsMaterial = new THREE.MeshStandardMaterial( {
+            color: 0xffffff, metalness: 1.0, roughness: 0.5
+        } );
+
+        const glassMaterial = new THREE.MeshPhysicalMaterial( {
+            color: 0xffffff, metalness: 0, roughness: 0.1, transmission: 0.9, transparent: true
+        } );
+
+        // Controller
+        const bodyColorInput = document.getElementById( 'body-color' );
+        bodyColorInput.addEventListener( 'input', function () {
+            // console.log('vao', this.value);
+            bodyMaterial.color.set( this.value );
+            // createExportLink()
+        } );
+
+        const detailsColorInput = document.getElementById( 'details-color' );
+        detailsColorInput.addEventListener( 'input', function () {
+
+            detailsMaterial.color.set( this.value );
+            // createExportLink();
+        } );
+
+        const glassColorInput = document.getElementById( 'glass-color' );
+        glassColorInput.addEventListener( 'input', function () {
+
+            glassMaterial.color.set( this.value );
+            // createExportLink();
+        } );
 
         const dracoLoader = new DRACOLoader();
         dracoLoader.setDecoderPath(
