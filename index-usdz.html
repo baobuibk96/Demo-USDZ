@@ -37,7 +37,7 @@
 
   <body>
     <div id="info">
-        <h1 class="text-xl uppercase"> Demo AR 5</h1>
+        <h1 class="text-xl uppercase"> Demo AR 6</h1>
       
         <div class="flex">
           <div class="flex mx-auto items-start">
@@ -168,6 +168,7 @@
                 carModel.getObjectByName( 'wheel_rr' ).clear()
                 normalWheel[3].forEach(item => carModel.getObjectByName( 'wheel_rr' ).add(item.clone()))
 
+                await createExportLink();
                 return;
             }
             const gltfData = await modelLoader(listWheels[count % listWheels.length])
