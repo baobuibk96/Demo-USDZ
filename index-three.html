@@ -37,7 +37,7 @@
 
   <body>
     <div id="info">
-      <h1 class="text-xl uppercase"> Demo AR 14</h1>
+      <h1 class="text-xl uppercase"> Demo AR 15</h1>
       
       <div class="flex">
         <div class="flex mx-auto items-start">
@@ -171,10 +171,10 @@
             children.getObjectByName( 'glass' ).material = glassMaterial;
 
             normalWheel = [
-                // carModel.getObjectByName( 'wheel_fl' ).children.slice(),
-                // carModel.getObjectByName( 'wheel_fr' ).children.slice(),
-                // carModel.getObjectByName( 'wheel_rl' ).children.slice(),
-                // carModel.getObjectByName( 'wheel_rr' ).children.slice(),
+                carModel.getObjectByName( 'wheel_fl' ).children.slice(),
+                carModel.getObjectByName( 'wheel_fr' ).children.slice(),
+                carModel.getObjectByName( 'wheel_rl' ).children.slice(),
+                carModel.getObjectByName( 'wheel_rr' ).children.slice(),
             ]
 
             const buttonChangeWheel = document.getElementById( 'change-wheel' );
@@ -240,7 +240,7 @@
 
             bodyMaterial.color.set( "#0062ff" );
             console.log('vao 2');
-            await createExportLink()
+            await createExportLink(carModel)
         });
 
         const controls = new OrbitControls(camera, renderer.domElement);
