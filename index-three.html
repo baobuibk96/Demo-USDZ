@@ -37,7 +37,7 @@
 
   <body>
     <div id="info">
-      <h1 class="text-xl uppercase"> Demo AR 9</h1>
+      <h1 class="text-xl uppercase"> Demo AR 10</h1>
       
       <div class="flex">
         <div class="flex mx-auto items-start">
@@ -120,7 +120,7 @@
         // Controller
         const bodyColorInput = document.getElementById( 'body-color' );
         bodyColorInput.addEventListener( 'input', function () {
-
+            console.log('vao', this.value);
             bodyMaterial.color.set( this.value );
             createExportLink()
         } );
@@ -157,7 +157,7 @@
             });
         }
         // loader.load("DamagedHelmet.gltf", async function (gltf) {
-        loader.load("ferrari.glb", function (gltf) {
+        loader.load("ferrari.glb", async function (gltf) {
             carModel = gltf.scene.clone();
             const children = carModel.children[ 0 ];
             children.getObjectByName( 'body' ).material = bodyMaterial;
@@ -228,8 +228,13 @@
         //   shadowMesh.scale.setScalar(2);
           scene.add(mesh);
 
-          createExportLink(carModel);
-          createExportLink();
+        //   createExportLink(carModel);
+        //   createExportLink();
+            // createExportLink();
+
+            bodyMaterial.color.set( "green" );
+            console.log('vao 2');
+            await createExportLink()
         });
 
         const controls = new OrbitControls(camera, renderer.domElement);
@@ -241,7 +246,6 @@
         controls.update();
 
         window.addEventListener("resize", onWindowResize);
-        createExportLink();
       }
 
       async function createExportLink(model) {
