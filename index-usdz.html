@@ -37,7 +37,7 @@
 
   <body>
     <div id="info">
-        <h1 class="text-xl uppercase"> Demo AR 11</h1>
+        <h1 class="text-xl uppercase"> Demo AR 12</h1>
       
         <div class="flex">
           <div class="flex mx-auto items-start">
@@ -155,6 +155,48 @@
         }
 
         const buttonChangeWheel = document.getElementById( 'change-wheel' );
+        // buttonChangeWheel.addEventListener( 'click', async function () {
+        //         count++
+        //         const url = listWheels[count % listWheels.length]
+        //         if(url === "normal") {
+        //             carModel.getObjectByName( 'wheel_fl' ).clear()
+        //             normalWheel[0].forEach(item => carModel.getObjectByName( 'wheel_fl' ).add(item.clone()))
+        //             carModel.getObjectByName( 'wheel_rl' ).clear()
+        //             normalWheel[2].forEach(item => carModel.getObjectByName( 'wheel_rl' ).add(item.clone()))
+        //             carModel.getObjectByName( 'wheel_fr' ).clear()
+        //             normalWheel[1].forEach(item => carModel.getObjectByName( 'wheel_fr' ).add(item.clone()))
+        //             carModel.getObjectByName( 'wheel_rr' ).clear()
+        //             normalWheel[3].forEach(item => carModel.getObjectByName( 'wheel_rr' ).add(item.clone()))
+
+        //             return;
+        //         }
+        //         const gltfData = await modelLoader(listWheels[count % listWheels.length])
+                
+        //         const newWheel = gltfData.scene
+        //         console.log(newWheel.position);
+        //         newWheel.position.set(0, 0, 0)
+        //         console.log(newWheel);
+        //         // newWheel.children.map(item => {
+        //         //     item.position.set(0, 0, 0)
+        //         // })
+                
+        //         const newWheelFlip = newWheel.clone()
+        //         .rotateY(180 * (Math.PI/180))
+        //         console.log(newWheelFlip);
+        //         // carModel.getObjectByName( 'wheel_fl' ).clear()
+        //         carModel.getObjectByName( 'wheel_fl' ).attach(newWheelFlip.clone())
+        //         carModel.getObjectByName( newWheelFlip.name ).position.set(0, 0, 0)
+        //         console.log(carModel.getObjectByName( 'wheel_fl' ));
+        //         carModel.getObjectByName( 'wheel_rl' ).clear()
+        //         carModel.getObjectByName( 'wheel_rl' ).attach(newWheelFlip.clone())
+        //         carModel.getObjectByName( 'wheel_fr' ).clear()
+        //         carModel.getObjectByName( 'wheel_fr' ).attach(newWheel.clone())
+        //         carModel.getObjectByName( 'wheel_rr' ).clear()
+        //         carModel.getObjectByName( 'wheel_rr' ).attach(newWheel.clone())
+
+        //         await createExportLink();
+        //     } );
+
         buttonChangeWheel.addEventListener( 'click', async function () {
             count++
             const url = listWheels[count % listWheels.length]
@@ -171,44 +213,30 @@
                 await createExportLink();
                 return;
             }
-            const gltfData = await modelLoader(listWheels[count % listWheels.length])
-            // gltfData.scene.position.set(0, 0, 0)
+            const gltfData = await modelLoader(listWheels[count % listWheels.length]);
             console.log(gltfData.scene);
-            console.log(gltfData.scene.children[0]);
-            console.log(carModel.getObjectByName( 'wheel_fl' ));
-            // gltfData.scene.children.map(item => {
-            //     item.position.set(0, 0, 0)
-            //     return item
-            // })
-            console.dir(carModel.getObjectByName( 'wheel_fl' ).position.clone().x);
-            const newPosition = carModel.getObjectByName( 'wheel_fl' ).position.clone()
-            gltfData.scene.children[0].position.set(newPosition.x, newPosition.y, newPosition.z)
-
-            // scene.add(gltfData.scene.children[0])
-
-            //     console.log(gltfData.scene);
-            // const newWheel = gltfData.scene.clone()
-            // newWheel.children.map(item => {
-            //     // item.position.set(0, 0, 0)
-            //     return item
-            // })
             
-            // const newWheelFlip = newWheel.clone()
-            // .rotateY(180 * (Math.PI/180))
-            // console.log(carModel.getObjectByName( 'wheel_fl' ));
-            carModel.getObjectByName( 'wheel_fl' ).clear()
-            // console.log(carModel.getObjectByName( 'wheel_fl' ));
-            carModel.getObjectByName( 'wheel_fl' ).attach(gltfData.scene.children[0])
-            // console.log(carModel.getObjectByName( 'wheel_fl' ));
-            // console.log(carModel.getObjectByName( 'scene' ));
-            // console.log(newWheelFlip);
-            // carModel.getObjectByName( 'wheel_rl' ).clear()
-            // carModel.getObjectByName( 'wheel_rl' ).add(newWheelFlip.clone())
-            // carModel.getObjectByName( 'wheel_fr' ).clear()
-            // carModel.getObjectByName( 'wheel_fr' ).add(newWheel.clone())
-            // carModel.getObjectByName( 'wheel_rr' ).clear()
-            // carModel.getObjectByName( 'wheel_rr' ).add(newWheel.clone())
+            ([
+                {name: 'wheel_fl', rotate: true},
+                {name: 'wheel_fr', rotate: false},
+                {name: 'wheel_rl', rotate: true},
+                {name: 'wheel_rr', rotate: false},
+            ]).forEach(item => {
+                const currentWheel = carModel.getObjectByName( item.name )
+                const wheel = gltfData.scene.clone()
 
+                wheel.children.forEach(child => {
+                    child.position.set(0, 0, 0)
+                })
+                if(item.rotate) wheel.rotateY(180 * (Math.PI/180))
+                wheel.position.set(
+                    currentWheel.position.clone().x, 
+                    currentWheel.position.clone().y, 
+                    currentWheel.position.clone().z
+                )
+                currentWheel.clear()
+                currentWheel.attach(wheel)
+            })
             await createExportLink();
         } );
 
