@@ -37,7 +37,7 @@
 
   <body>
     <div id="info">
-        <h1 class="text-xl uppercase"> Demo AR 4</h1>
+        <h1 class="text-xl uppercase"> Demo AR 5</h1>
       
         <div class="flex">
           <div class="flex mx-auto items-start">
@@ -65,7 +65,13 @@
 
       import { DRACOLoader } from "https://cdn.skypack.dev/three@0.131.3/examples/jsm/loaders/DRACOLoader.js";
 
-      let camera, scene, renderer, carModel;
+      let camera, scene, renderer, carModel, normalWheel = [], count = 0;
+      let listWheels = [
+        "normal",
+        "new-wheel.glb",
+        "wheel_GAZ_66_CGTraber.glb",
+        "wheel_Zil_CGTraber.glb",
+        ]
 
       init();
       //   render();
@@ -141,12 +147,63 @@
         const loader = new GLTFLoader()
           .setDRACOLoader(dracoLoader)
           .setPath("models/Car/");
+
+        function modelLoader(url) {
+            return new Promise((resolve, reject) => {
+                loader.load(url, data=> resolve(data), null, reject);
+            });
+        }
+
+        const buttonChangeWheel = document.getElementById( 'change-wheel' );
+        buttonChangeWheel.addEventListener( 'click', async function () {
+            count++
+            const url = listWheels[count % listWheels.length]
+            if(url === "normal") {
+                carModel.getObjectByName( 'wheel_fl' ).clear()
+                normalWheel[0].forEach(item => carModel.getObjectByName( 'wheel_fl' ).add(item.clone()))
+                carModel.getObjectByName( 'wheel_rl' ).clear()
+                normalWheel[2].forEach(item => carModel.getObjectByName( 'wheel_rl' ).add(item.clone()))
+                carModel.getObjectByName( 'wheel_fr' ).clear()
+                normalWheel[1].forEach(item => carModel.getObjectByName( 'wheel_fr' ).add(item.clone()))
+                carModel.getObjectByName( 'wheel_rr' ).clear()
+                normalWheel[3].forEach(item => carModel.getObjectByName( 'wheel_rr' ).add(item.clone()))
+
+                return;
+            }
+            const gltfData = await modelLoader(listWheels[count % listWheels.length])
+            
+            const newWheel = gltfData.scene
+            newWheel.children.map(item => {
+                item.position.set(0, 0, 0)
+            })
+            
+            const newWheelFlip = newWheel.clone()
+            .rotateY(180 * (Math.PI/180))
+            carModel.getObjectByName( 'wheel_fl' ).clear()
+            carModel.getObjectByName( 'wheel_fl' ).add(newWheelFlip.clone())
+            carModel.getObjectByName( 'wheel_rl' ).clear()
+            carModel.getObjectByName( 'wheel_rl' ).add(newWheelFlip.clone())
+            carModel.getObjectByName( 'wheel_fr' ).clear()
+            carModel.getObjectByName( 'wheel_fr' ).add(newWheel.clone())
+            carModel.getObjectByName( 'wheel_rr' ).clear()
+            carModel.getObjectByName( 'wheel_rr' ).add(newWheel.clone())
+
+            await createExportLink();
+        } );
+
         loader.load("ferrari.glb", async function (gltf) {
             carModel = gltf.scene;
             const children = carModel.children[ 0 ];
             children.getObjectByName( 'body' ).material = bodyMaterial;
             children.getObjectByName( 'trim' ).material = detailsMaterial;
             children.getObjectByName( 'glass' ).material = glassMaterial;
+
+            normalWheel = [
+                carModel.getObjectByName( 'wheel_fl' ).children.slice(),
+                carModel.getObjectByName( 'wheel_fr' ).children.slice(),
+                carModel.getObjectByName( 'wheel_rl' ).children.slice(),
+                carModel.getObjectByName( 'wheel_rr' ).children.slice(),
+            ]
 
           scene.add(carModel);
 
