@@ -142,7 +142,13 @@
           .setDRACOLoader(dracoLoader)
           .setPath("models/Car/");
         loader.load("ferrari.glb", async function (gltf) {
-          scene.add(gltf.scene);
+            const carModel = gltf.scene;
+            const children = carModel.children[ 0 ];
+            children.getObjectByName( 'body' ).material = bodyMaterial;
+            children.getObjectByName( 'trim' ).material = detailsMaterial;
+            children.getObjectByName( 'glass' ).material = glassMaterial;
+
+          scene.add(carModel);
 
           const shadowMesh = createSpotShadowMesh();
           shadowMesh.position.y = -1.1;
