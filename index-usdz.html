@@ -37,7 +37,7 @@
 
   <body>
     <div id="info">
-        <h1 class="text-xl uppercase"> Demo AR 2</h1>
+        <h1 class="text-xl uppercase"> Demo AR 3</h1>
       
         <div class="flex">
           <div class="flex mx-auto items-start">
@@ -159,15 +159,15 @@
           render();
 
           // USDZ
+          await createExportLink(gltf.scene)
+        //   const exporter = new USDZExporter();
+        //   const arraybuffer = await exporter.parse(gltf.scene);
+        //   const blob = new Blob([arraybuffer], {
+        //     type: "application/octet-stream",
+        //   });
 
-          const exporter = new USDZExporter();
-          const arraybuffer = await exporter.parse(gltf.scene);
-          const blob = new Blob([arraybuffer], {
-            type: "application/octet-stream",
-          });
-
-          const link = document.getElementById("link");
-          link.href = URL.createObjectURL(blob);
+        //   const link = document.getElementById("link");
+        //   link.href = URL.createObjectURL(blob);
         });
 
         const controls = new OrbitControls(camera, renderer.domElement);
@@ -178,6 +178,17 @@
         controls.update();
 
         window.addEventListener("resize", onWindowResize);
+      }
+
+      async function createExportLink(model) {
+        const exporter = new USDZExporter();
+          const arraybuffer = await exporter.parse(model);
+          const blob = new Blob([arraybuffer], {
+            type: "application/octet-stream",
+          });
+
+          const link = document.getElementById("link");
+          link.href = URL.createObjectURL(blob);
       }
 
       function createSpotShadowMesh() {
