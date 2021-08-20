@@ -37,7 +37,7 @@
 
   <body>
     <div id="info">
-        <h1 class="text-xl uppercase"> Demo AR 6</h1>
+        <h1 class="text-xl uppercase"> Demo AR 7</h1>
       
         <div class="flex">
           <div class="flex mx-auto items-start">
@@ -176,6 +176,7 @@
             const newWheel = gltfData.scene
             newWheel.children.map(item => {
                 item.position.set(0, 0, 0)
+                return item
             })
             
             const newWheelFlip = newWheel.clone()
