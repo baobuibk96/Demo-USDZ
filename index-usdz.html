@@ -37,7 +37,7 @@
 
   <body>
     <div id="info">
-        <h1 class="text-xl uppercase"> Demo AR 7</h1>
+        <h1 class="text-xl uppercase"> Demo AR 8</h1>
       
         <div class="flex">
           <div class="flex mx-auto items-start">
@@ -172,23 +172,46 @@
                 return;
             }
             const gltfData = await modelLoader(listWheels[count % listWheels.length])
-            
-            const newWheel = gltfData.scene
-            newWheel.children.map(item => {
-                item.position.set(0, 0, 0)
-                return item
-            })
-            
+            const newWheel = gltfData.scene.children[0].clone()
             const newWheelFlip = newWheel.clone()
             .rotateY(180 * (Math.PI/180))
+            newWheelFlip.position.set(0, 0, 0)
+            // gltfData.scene.position.set(0, 0, 0)
+            console.log(gltfData.scene);
+            console.log(gltfData.scene.children[0]);
+            console.log(carModel.getObjectByName( 'wheel_fl' ));
+            // gltfData.scene.children.map(item => {
+            //     item.position.set(0, 0, 0)
+            //     return item
+            // })
+            console.dir(carModel.getObjectByName( 'wheel_fl' ).position.clone().x);
+            const newPosition = carModel.getObjectByName( 'wheel_fl' ).position.clone()
+            gltfData.scene.children[0].position.set(newPosition.x, newPosition.y, newPosition.z)
+
+            // scene.add(gltfData.scene.children[0])
+            //     console.log(gltfData.scene);
+            // const newWheel = gltfData.scene.clone()
+            // newWheel.children.map(item => {
+            //     // item.position.set(0, 0, 0)
+            //     return item
+            // })
+            
+            // const newWheelFlip = newWheel.clone()
+            // .rotateY(180 * (Math.PI/180))
+            // console.log(carModel.getObjectByName( 'wheel_fl' ));
             carModel.getObjectByName( 'wheel_fl' ).clear()
+            // console.log(carModel.getObjectByName( 'wheel_fl' ));
+            
             carModel.getObjectByName( 'wheel_fl' ).add(newWheelFlip.clone())
-            carModel.getObjectByName( 'wheel_rl' ).clear()
-            carModel.getObjectByName( 'wheel_rl' ).add(newWheelFlip.clone())
-            carModel.getObjectByName( 'wheel_fr' ).clear()
-            carModel.getObjectByName( 'wheel_fr' ).add(newWheel.clone())
-            carModel.getObjectByName( 'wheel_rr' ).clear()
-            carModel.getObjectByName( 'wheel_rr' ).add(newWheel.clone())
+            // console.log(carModel.getObjectByName( 'wheel_fl' ));
+            // console.log(carModel.getObjectByName( 'scene' ));
+            // console.log(newWheelFlip);
+            // carModel.getObjectByName( 'wheel_rl' ).clear()
+            // carModel.getObjectByName( 'wheel_rl' ).add(newWheelFlip.clone())
+            // carModel.getObjectByName( 'wheel_fr' ).clear()
+            // carModel.getObjectByName( 'wheel_fr' ).add(newWheel.clone())
+            // carModel.getObjectByName( 'wheel_rr' ).clear()
+            // carModel.getObjectByName( 'wheel_rr' ).add(newWheel.clone())
 
             await createExportLink();
         } );
