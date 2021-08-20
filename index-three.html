@@ -37,7 +37,7 @@
 
   <body>
     <div id="info">
-      <h1 class="text-xl uppercase"> Demo AR 6</h1>
+      <h1 class="text-xl uppercase"> Demo AR 7</h1>
       
       <div class="flex">
         <div class="flex mx-auto items-start">
@@ -248,6 +248,7 @@
         const link = document.getElementById("link");
         link.style.visibility = "hidden";
         const exporter = new USDZExporter();
+        console.log(model || carModel);
         const arraybuffer = await exporter.parse(model || carModel);
         const blob = new Blob([arraybuffer], {
             // type: "application/octet-stream",
