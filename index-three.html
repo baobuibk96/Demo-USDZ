@@ -37,7 +37,7 @@
 
   <body>
     <div id="info">
-      <h1 class="text-xl uppercase"> Demo AR 7</h1>
+      <h1 class="text-xl uppercase"> Demo AR 8</h1>
       
       <div class="flex">
         <div class="flex mx-auto items-start">
@@ -172,7 +172,7 @@
             ]
 
             const buttonChangeWheel = document.getElementById( 'change-wheel' );
-            buttonChangeWheel.addEventListener( 'click', async function () {
+            buttonChangeWheel.addEventListener( 'click', function () {
                 count++
                 const url = listWheels[count % listWheels.length]
                 if(url === "normal") {
@@ -229,6 +229,7 @@
           scene.add(mesh);
 
           createExportLink(carModel);
+          createExportLink();
         });
 
         const controls = new OrbitControls(camera, renderer.domElement);
