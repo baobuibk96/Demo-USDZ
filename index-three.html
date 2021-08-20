@@ -37,7 +37,7 @@
 
   <body>
     <div id="info">
-      <h1 class="text-xl uppercase"> Demo AR 8</h1>
+      <h1 class="text-xl uppercase"> Demo AR 9</h1>
       
       <div class="flex">
         <div class="flex mx-auto items-start">
@@ -241,6 +241,7 @@
         controls.update();
 
         window.addEventListener("resize", onWindowResize);
+        createExportLink();
       }
 
       async function createExportLink(model) {
@@ -249,13 +250,14 @@
         const link = document.getElementById("link");
         link.style.visibility = "hidden";
         const exporter = new USDZExporter();
-        console.log(model || carModel);
+        // console.log(model || carModel);
         const arraybuffer = await exporter.parse(model || carModel);
         const blob = new Blob([arraybuffer], {
             // type: "application/octet-stream",
             type: 'model/vnd.usd+zip'
         });
         link.href = URL.createObjectURL(blob);
+        console.log(URL.createObjectURL(blob));
         link.style.visibility = "visible";
       }
 
