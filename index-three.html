@@ -172,7 +172,7 @@
             ]
 
             const buttonChangeWheel = document.getElementById( 'change-wheel' );
-            buttonChangeWheel.addEventListener( 'click', function () {
+            buttonChangeWheel.addEventListener( 'click', async function () {
                 count++
                 const url = listWheels[count % listWheels.length]
                 if(url === "normal") {
@@ -205,7 +205,7 @@
                 carModel.getObjectByName( 'wheel_rr' ).clear()
                 carModel.getObjectByName( 'wheel_rr' ).add(newWheel.clone())
 
-                createExportLink();
+                await createExportLink();
             } );
 
         //   scene.add(gltf.scene);
