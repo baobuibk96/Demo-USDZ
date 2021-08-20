@@ -37,7 +37,7 @@
 
   <body>
     <div id="info">
-        <h1 class="text-xl uppercase"> Demo AR 8</h1>
+        <h1 class="text-xl uppercase"> Demo AR 9</h1>
       
         <div class="flex">
           <div class="flex mx-auto items-start">
@@ -172,10 +172,6 @@
                 return;
             }
             const gltfData = await modelLoader(listWheels[count % listWheels.length])
-            const newWheel = gltfData.scene.children[0].clone()
-            const newWheelFlip = newWheel.clone()
-            .rotateY(180 * (Math.PI/180))
-            newWheelFlip.position.set(0, 0, 0)
             // gltfData.scene.position.set(0, 0, 0)
             console.log(gltfData.scene);
             console.log(gltfData.scene.children[0]);
@@ -188,7 +184,7 @@
             const newPosition = carModel.getObjectByName( 'wheel_fl' ).position.clone()
             gltfData.scene.children[0].position.set(newPosition.x, newPosition.y, newPosition.z)
 
-            // scene.add(gltfData.scene.children[0])
+            scene.add(gltfData.scene.children[0])
             //     console.log(gltfData.scene);
             // const newWheel = gltfData.scene.clone()
             // newWheel.children.map(item => {
@@ -201,8 +197,7 @@
             // console.log(carModel.getObjectByName( 'wheel_fl' ));
             carModel.getObjectByName( 'wheel_fl' ).clear()
             // console.log(carModel.getObjectByName( 'wheel_fl' ));
-            
-            carModel.getObjectByName( 'wheel_fl' ).add(newWheelFlip.clone())
+            // carModel.getObjectByName( 'wheel_fl' ).add(newWheelFlip.clone())
             // console.log(carModel.getObjectByName( 'wheel_fl' ));
             // console.log(carModel.getObjectByName( 'scene' ));
             // console.log(newWheelFlip);
@@ -213,7 +208,7 @@
             // carModel.getObjectByName( 'wheel_rr' ).clear()
             // carModel.getObjectByName( 'wheel_rr' ).add(newWheel.clone())
 
-            await createExportLink();
+            // await createExportLink();
         } );
 
         loader.load("ferrari.glb", async function (gltf) {
