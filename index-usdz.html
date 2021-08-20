@@ -37,7 +37,7 @@
 
   <body>
     <div id="info">
-        <h1 class="text-xl uppercase"> Demo AR 12</h1>
+        <h1 class="text-xl uppercase"> Demo AR 13</h1>
       
         <div class="flex">
           <div class="flex mx-auto items-start">
@@ -202,13 +202,17 @@
             const url = listWheels[count % listWheels.length]
             if(url === "normal") {
                 carModel.getObjectByName( 'wheel_fl' ).clear()
-                normalWheel[0].forEach(item => carModel.getObjectByName( 'wheel_fl' ).add(item.clone()))
+                carModel.getObjectByName( 'wheel_fl' ).attach(normalWheel[0].clone())
+                // normalWheel[0].forEach(item => carModel.getObjectByName( 'wheel_fl' ).attach(normalWheel[0].clone()))
                 carModel.getObjectByName( 'wheel_rl' ).clear()
-                normalWheel[2].forEach(item => carModel.getObjectByName( 'wheel_rl' ).add(item.clone()))
+                carModel.getObjectByName( 'wheel_rl' ).attach(normalWheel[2].clone())
+                // normalWheel[2].forEach(item => carModel.getObjectByName( 'wheel_rl' ).attach(item.clone()))
                 carModel.getObjectByName( 'wheel_fr' ).clear()
-                normalWheel[1].forEach(item => carModel.getObjectByName( 'wheel_fr' ).add(item.clone()))
+                carModel.getObjectByName( 'wheel_fr' ).attach(normalWheel[1].clone())
+                // normalWheel[1].forEach(item => carModel.getObjectByName( 'wheel_fr' ).attach(item.clone()))
                 carModel.getObjectByName( 'wheel_rr' ).clear()
-                normalWheel[3].forEach(item => carModel.getObjectByName( 'wheel_rr' ).add(item.clone()))
+                carModel.getObjectByName( 'wheel_rr' ).attach(normalWheel[3].clone())
+                // normalWheel[3].forEach(item => carModel.getObjectByName( 'wheel_rr' ).attach(item.clone()))
 
                 await createExportLink();
                 return;
@@ -248,10 +252,13 @@
             children.getObjectByName( 'glass' ).material = glassMaterial;
 
             normalWheel = [
-                carModel.getObjectByName( 'wheel_fl' ).children.slice(),
-                carModel.getObjectByName( 'wheel_fr' ).children.slice(),
-                carModel.getObjectByName( 'wheel_rl' ).children.slice(),
-                carModel.getObjectByName( 'wheel_rr' ).children.slice(),
+                carModel.getObjectByName( 'wheel_fl' ).clone(),
+                carModel.getObjectByName( 'wheel_fr' ).clone(),
+                carModel.getObjectByName( 'wheel_rl' ).clone(),
+                carModel.getObjectByName( 'wheel_rr' ).clone(),
+                // carModel.getObjectByName( 'wheel_fr' ).children.slice(),
+                // carModel.getObjectByName( 'wheel_rl' ).children.slice(),
+                // carModel.getObjectByName( 'wheel_rr' ).children.slice(),
             ]
 
           scene.add(carModel);
