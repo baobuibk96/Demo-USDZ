@@ -37,7 +37,7 @@
 
   <body>
     <div id="info">
-        <h1 class="text-xl uppercase"> Demo AR 3</h1>
+        <h1 class="text-xl uppercase"> Demo AR 4</h1>
       
         <div class="flex">
           <div class="flex mx-auto items-start">
@@ -65,7 +65,7 @@
 
       import { DRACOLoader } from "https://cdn.skypack.dev/three@0.131.3/examples/jsm/loaders/DRACOLoader.js";
 
-      let camera, scene, renderer;
+      let camera, scene, renderer, carModel;
 
       init();
       //   render();
@@ -111,10 +111,10 @@
 
         // Controller
         const bodyColorInput = document.getElementById( 'body-color' );
-        bodyColorInput.addEventListener( 'input', function () {
+        bodyColorInput.addEventListener( 'input', async function () {
             // console.log('vao', this.value);
             bodyMaterial.color.set( this.value );
-            // createExportLink()
+            await createExportLink()
         } );
 
         const detailsColorInput = document.getElementById( 'details-color' );
@@ -142,7 +142,7 @@
           .setDRACOLoader(dracoLoader)
           .setPath("models/Car/");
         loader.load("ferrari.glb", async function (gltf) {
-            const carModel = gltf.scene;
+            carModel = gltf.scene;
             const children = carModel.children[ 0 ];
             children.getObjectByName( 'body' ).material = bodyMaterial;
             children.getObjectByName( 'trim' ).material = detailsMaterial;
@@ -182,7 +182,7 @@
 
       async function createExportLink(model) {
         const exporter = new USDZExporter();
-          const arraybuffer = await exporter.parse(model);
+          const arraybuffer = await exporter.parse(model || carModel);
           const blob = new Blob([arraybuffer], {
             type: "application/octet-stream",
           });
