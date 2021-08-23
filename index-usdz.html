@@ -278,10 +278,15 @@
           type: "application/octet-stream",
         });
 
+        // const link = document.getElementById("link");
+        // link.href = URL.createObjectURL(blob);
+
         const link = document.createElement('a')
+        // rel="ar" href="" download="asset.usdz"
+        link.download = 'asset.usdz'
         link.rel = 'ar'
         link.href = URL.createObjectURL(blob)
-        link.setAttribute('download', 'asset.usdz')
+        // link.setAttribute('download', 'asset.usdz')
         document.body.appendChild(link)
         link.click()
         link.remove()
