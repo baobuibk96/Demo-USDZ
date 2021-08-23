@@ -27,7 +27,7 @@
       #info {
         color: #222;
       }
-      #button {
+      #link {
         position: absolute;
         bottom: 15px;
         left: calc(50% - 40px);
@@ -35,7 +35,8 @@
       #view-ar {
         position: absolute;
         bottom: 15px;
-        right: 10px;
+        /* right: 10px; */
+        left: calc(50% - 40px);
       }
     </style>
   </head>
@@ -54,10 +55,10 @@
         </div>
     </div>
 
-    <a id="link" rel="ar" href="" download="asset.usdz">
-      <img id="button" width="100" src="images/arkit.png" />
+    <a id="link" rel="ar" href="" download="asset.usdz" style="visibility: hidden;">
+      <!-- <img id="button" width="100" src="images/arkit.png" /> -->
     </a>
-    <button id="view-ar">view AR</button>
+    <button id="view-ar"><img width="100" src="images/arkit.png" /></button>
 
     <script type="module">
       import * as THREE from "https://cdn.skypack.dev/three@0.131.3";
@@ -83,7 +84,7 @@
       init();
       //   render();
 
-      function init() {
+      async function init() {
         renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.setSize(window.innerWidth, window.innerHeight);
@@ -166,6 +167,15 @@
                 loader.load(url, data=> resolve(data), null, reject);
             });
         }
+        console.log(listWheels.slice());
+        const models = await Promise.all(listWheels.slice().map(item => {
+          console.log(item);
+          if(item === 'normal') return null
+          return modelLoader(item);
+        }))
+        listWheels.forEach((url, index) => {
+          listWheelModels[url] = models[index]
+        })
 
         const buttonChangeWheel = document.getElementById( 'change-wheel' );
         buttonChangeWheel.addEventListener( 'click', async function () {
