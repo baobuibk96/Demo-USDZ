@@ -27,29 +27,10 @@
       #info {
         color: #222;
       }
-      #link {
-        /* position: absolute;
-        bottom: 15px;
-        left: calc(50% - 40px); */
-        /* left: 0;
-        top: 0; */
-      }
       #view-ar {
         position: absolute;
         bottom: 15px;
-        /* right: 10px; */
         left: calc(50% - 40px);
-      }
-      .ar {
-        /* position: absolute;
-        z-index: 0;
-        width: 50px;
-        height: 50px;
-        overflow: hidden;
-        opacity: 0;
-        text-align: right;
-        right: 16px;
-        top: 18px; */
       }
     </style>
   </head>
@@ -70,7 +51,6 @@
 
     <a id="link" rel="ar" href="" download="asset.usdz" class="ar">
       <img src="">
-      <!-- <img id="button" width="100" src="images/arkit.png" /> -->
     </a>
     <button id="view-ar"><img width="100" src="images/arkit.png" /></button>
 
@@ -114,7 +94,7 @@
           20
         );
         // camera.position.set(-2.5, 0.6, 3.0);
-        camera.position.set( 4.25, 1.4, - 4.5 );
+        camera.position.set( 4.25, 1.4, -7.5 );
 
         const pmremGenerator = new THREE.PMREMGenerator(renderer);
 
