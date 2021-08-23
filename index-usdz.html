@@ -28,9 +28,9 @@
         color: #222;
       }
       #link {
-        position: absolute;
+        /* position: absolute;
         bottom: 15px;
-        left: calc(50% - 40px);
+        left: calc(50% - 40px); */
         /* left: 0;
         top: 0; */
       }
@@ -39,6 +39,17 @@
         bottom: 15px;
         /* right: 10px; */
         left: calc(50% - 40px);
+      }
+      .ar {
+        position: absolute;
+        z-index: 0;
+        width: 50px;
+        height: 50px;
+        overflow: hidden;
+        opacity: 0;
+        text-align: right;
+        right: 16px;
+        top: 18px;
       }
     </style>
   </head>
@@ -57,8 +68,9 @@
         </div>
     </div>
 
-    <a id="link" rel="ar" href="" download="asset.usdz">
-      <img id="button" width="100" src="images/arkit.png" />
+    <a id="link" rel="ar" href="" download="asset.usdz" class="ar">
+      <img src="">
+      <!-- <img id="button" width="100" src="images/arkit.png" /> -->
     </a>
     <button id="view-ar"><img width="100" src="images/arkit.png" /></button>
 
