@@ -32,6 +32,11 @@
         bottom: 15px;
         left: calc(50% - 40px);
       }
+      #view-ar {
+        position: absolute;
+        bottom: 15px;
+        right: 10px;
+      }
     </style>
   </head>
 
@@ -52,6 +57,7 @@
     <a id="link" rel="ar" href="" download="asset.usdz">
       <img id="button" width="100" src="images/arkit.png" />
     </a>
+    <button id="view-ar">view AR</button>
 
     <script type="module">
       import * as THREE from "https://cdn.skypack.dev/three@0.131.3";
@@ -139,10 +145,10 @@
             // createExportLink();
         } );
 
-        // const linkButton = document.getElementById( 'link' );
-        // linkButton.addEventListener( 'click', function () {
-        //     viewAR();
-        // } );
+        const viewARButton = document.getElementById( 'view-ar' );
+        viewARButton.addEventListener( 'click', function () {
+            viewAR();
+        } );
 
         const dracoLoader = new DRACOLoader();
         dracoLoader.setDecoderPath(
@@ -261,30 +267,26 @@
       }
 
       async function createExportLink(model) {
-        const exporter = new USDZExporter();
-          const arraybuffer = await exporter.parse(model || carModel);
-          const blob = new Blob([arraybuffer], {
-            type: "application/octet-stream",
-          });
+        // const exporter = new USDZExporter();
+        //   const arraybuffer = await exporter.parse(model || carModel);
+        //   const blob = new Blob([arraybuffer], {
+        //     type: "application/octet-stream",
+        //   });
 
-          const link = document.getElementById("link");
-          link.href = URL.createObjectURL(blob);
+        //   const link = document.getElementById("link");
+        //   link.href = URL.createObjectURL(blob);
       }
 
       async function viewAR() {
-        // const exporter = new USDZExporter();
-        // const arraybuffer = await exporter.parse(carModel);
-        // const blob = new Blob([arraybuffer], {
-        //   type: "application/octet-stream",
-        // });
+        const exporter = new USDZExporter();
+        const arraybuffer = await exporter.parse(carModel);
+        const blob = new Blob([arraybuffer], {
+          type: "application/octet-stream",
+        });
 
-        // const link = document.createElement('a')
-        // link.download = 'asset.usdz'
-        // link.rel = 'ar'
-        // link.href = URL.createObjectURL(blob)
-        // document.body.appendChild(link)
-        // link.click()
-        // link.remove()
+        const link = document.getElementById("link");
+        link.href = URL.createObjectURL(blob);
+        link.click()
       }
 
       function createSpotShadowMesh() {
