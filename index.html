@@ -19,46 +19,51 @@
     <header class="bg-gray-700 py-3 shadow-lg">
       <h1 class="uppercase text-white text-xl text-center">Demo AR</h1>
     </header>
-    <div class="p-4 space-y-4">
-      <div class="flex">
-        <div class="w-36">
-          <a href="cup.html"
-            ><img
-              src="./images/cup_cotton.png"
+    <div class="p-4 max-w-5xl m-auto">
+      <div class="grid grid-cols-1 md:grid-cols-2 space-y-4 md:space-x-4">
+        <div class="flex">
+          <div class="w-40">
+            <a href="cup.html"
+              ><img
+                src="./images/cup_cotton.png"
+                alt=""
+                class="w-full rounded-lg border"
+            /></a>
+          </div>
+          <div class="flex-1 ml-4">
+            <h1 class="text-lg text-bold">
+              <a href="cup.html">Cup</a>
+            </h1>
+            <img
+              src="./images/qrcode-icon.png"
               alt=""
-              class="w-full rounded-lg"
-          /></a>
+              width="40px"
+              id="cup"
+              class="qrcode-btn"
+            />
+            <div id="qrcode_cup" class="qrcode w-20 mt-1"></div>
+          </div>
         </div>
-        <div class="flex-1 ml-4">
-          <h1 class="text-lg text-bold">
-            <a href="cup.html">Cup</a>
-          </h1>
-          <img
-            src="./images/qrcode-icon.png"
-            alt=""
-            width="40px"
-            id="cup"
-            class="qrcode-btn"
-          />
-          <div id="qrcode_cup" class="qrcode w-20 mt-1"></div>
-        </div>
-      </div>
-      <div class="flex">
-        <div class="w-36">
-          <a href="mug.html"
-            ><img src="./images/cup.png" alt="" class="w-full rounded-lg"
-          /></a>
-        </div>
-        <div class="flex-1 ml-4">
-          <h1 class="text-lg text-bold"><a href="mug.html">Mug</a></h1>
-          <img
-            src="./images/qrcode-icon.png"
-            alt=""
-            width="40px"
-            id="mug"
-            class="qrcode-btn"
-          />
-          <div id="qrcode_mug" class="qrcode w-20 mt-1"></div>
+        <div class="flex">
+          <div class="w-40">
+            <a href="mug.html"
+              ><img
+                src="./images/cup.png"
+                alt=""
+                class="w-full rounded-lg border"
+            /></a>
+          </div>
+          <div class="flex-1 ml-4">
+            <h1 class="text-lg text-bold"><a href="mug.html">Mug</a></h1>
+            <img
+              src="./images/qrcode-icon.png"
+              alt=""
+              width="40px"
+              id="mug"
+              class="qrcode-btn"
+            />
+            <div id="qrcode_mug" class="qrcode w-20 mt-1"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -71,7 +76,7 @@
 
     <script type="text/javascript">
       const elements = document.getElementsByClassName("qrcode-btn");
-      console.log(elements);
+
       Array.from(elements).forEach((element) => {
         element.addEventListener(
           "click",

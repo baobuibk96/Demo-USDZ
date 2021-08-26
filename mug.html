@@ -46,6 +46,7 @@
         <div class="flex mt-3">
           <div class="flex mx-auto items-start">
               <span class="colorPicker"><input id="body-color" type="color" value="#ff0000"></input><br/>Body</span>
+              <span class="colorPicker"><input id="inside-color" type="color" value="#ffffff"></input><br/>Inside</span>
               <!-- <span class="colorPicker"><input id="details-color" type="color" value="#ffffff"></input><br/>Details</span>
               <span class="colorPicker"><input id="glass-color" type="color" value="#ffffff"></input><br/>Glass</span>
               <button id="change-wheel" class="border border-gray-500 rounded-md p-1 bg-white">Change Wheel</button> -->
@@ -116,9 +117,12 @@
         // Controller
         const bodyColorInput = document.getElementById( 'body-color' );
         bodyColorInput.addEventListener( 'input', async function () {
-            // console.log('vao', this.value);
-            console.log(bodyMaterial);
             bodyMaterial.material.color.set( this.value );
+            await createExportLink()
+        } );
+        
+        document.getElementById( 'inside-color' ).addEventListener( 'input', async function () {
+          mainModel.getObjectByName("Object_3").material.color.set( this.value );
             await createExportLink()
         } );
 
@@ -147,8 +151,9 @@
         loader.load("scene.gltf", async function (gltf) {
           gltf.scene.children[0].scale.set(0.08, 0.08, 0.08)
           mainModel = gltf.scene;
-          bodyMaterial = mainModel.children[0].getObjectByName( 'scrivania_BLENDER_RENDER-cup2_obj_0objcleanermaterialmergergles', true ).children[0]
-
+          console.log(mainModel);
+          bodyMaterial = mainModel.getObjectByName("Object_2")
+          console.log(mainModel.getObjectByName("Object_3"));
 
           scene.add(mainModel);
 
