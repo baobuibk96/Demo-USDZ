@@ -32,6 +32,10 @@
         bottom: 15px;
         left: calc(50% - 40px);
       }
+      button.active {
+        background-color: blue;
+        color: white;
+      }
     </style>
   </head>
 
@@ -52,7 +56,7 @@
               <span class="colorPicker"><input id="glass-color" type="color" value="#ffffff"></input><br/>Glass</span> -->
           <button
             id="texture-1"
-            class="border border-gray-500 rounded-md p-1 bg-white"
+            class="border border-gray-500 rounded-md p-1 bg-white active"
           >
             Texture 1
           </button>
@@ -194,6 +198,10 @@
             const texture = loadedTextures[0];
             mainTexture.image = texture.image;
             mainTexture.needsUpdate = true;
+            document
+              .getElementsByClassName("active")[0]
+              .classList.remove("active");
+            this.classList.add("active");
           });
 
         document
@@ -202,6 +210,10 @@
             const texture = loadedTextures[1];
             mainTexture.image = texture.image;
             mainTexture.needsUpdate = true;
+            document
+              .getElementsByClassName("active")[0]
+              .classList.remove("active");
+            this.classList.add("active");
           });
 
         document
@@ -210,6 +222,10 @@
             const texture = loadedTextures[2];
             mainTexture.image = texture.image;
             mainTexture.needsUpdate = true;
+            document
+              .getElementsByClassName("active")[0]
+              .classList.remove("active");
+            this.classList.add("active");
           });
 
         loader.load("Cup_cotton.glb", async function (gltf) {
