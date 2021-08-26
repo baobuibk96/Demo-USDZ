@@ -94,11 +94,11 @@
       });
       new QRCode(
         document.getElementById("qrcode_cup"),
-        `${window.location.origin}/cup.html`
+        `${window.location.href.split("/").slice(0, -1).join("/")}/cup.html`
       );
       new QRCode(
         document.getElementById("qrcode_mug"),
-        `${window.location.origin}/mug.html`
+        `${window.location.href.split("/").slice(0, -1).join("/")}/mug.html`
       );
     </script>
   </body>
