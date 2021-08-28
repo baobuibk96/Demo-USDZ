@@ -17,7 +17,7 @@ const getMobileOS = () => {
   return "Other";
 };
 
-async function viewAR(mainModel) {
+function viewAR(mainModel) {
   return new Promise(async (resolve, reject) => {
     const os = getMobileOS();
     if (os === "Android") {
