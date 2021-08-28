@@ -93,6 +93,7 @@
       import { USDZExporter } from "https://cdn.skypack.dev/three@0.131.3/examples/jsm/exporters/USDZExporter.js";
 
       import { DRACOLoader } from "https://cdn.skypack.dev/three@0.131.3/examples/jsm/loaders/DRACOLoader.js";
+      import { getMobileOS, viewAR } from "./js/common/index.js";
 
       let camera,
         scene,
@@ -144,7 +145,7 @@
 
         const viewARButton = document.getElementById("view-ar");
         viewARButton.addEventListener("click", function () {
-          viewAR();
+          viewAR(mainModel);
         });
 
         const dracoLoader = new DRACOLoader();
@@ -233,10 +234,9 @@
           const texture = await textureLoader(
             "models/cup_cotton/texture-3.jpg"
           );
-          console.log(texture);
           // gltf.scene.children[0].scale.set(0.08, 0.08, 0.08)
           mainModel = gltf.scene;
-          console.log(mainModel);
+
           mainTexture = mainModel.getObjectByName("Cup_cotton", true)
             .children[0].material.map;
           // console.log(
@@ -264,7 +264,7 @@
           shadowMesh.position.z = 0;
           // shadowMesh.scale.setScalar(2);
           scene.add(shadowMesh);
-          console.log(scene);
+
           render();
 
           // USDZ
@@ -293,17 +293,17 @@
         //   link.href = URL.createObjectURL(blob);
       }
 
-      async function viewAR() {
-        const exporter = new USDZExporter();
-        const arraybuffer = await exporter.parse(mainModel);
-        const blob = new Blob([arraybuffer], {
-          type: "application/octet-stream",
-        });
+      // async function viewAR() {
+      //   const exporter = new USDZExporter();
+      //   const arraybuffer = await exporter.parse(mainModel);
+      //   const blob = new Blob([arraybuffer], {
+      //     type: "application/octet-stream",
+      //   });
 
-        const link = document.getElementById("link");
-        link.href = URL.createObjectURL(blob);
-        link.click();
-      }
+      //   const link = document.getElementById("link");
+      //   link.href = URL.createObjectURL(blob);
+      //   link.click();
+      // }
 
       function createSpotShadowMesh() {
         const canvas = document.createElement("canvas");
