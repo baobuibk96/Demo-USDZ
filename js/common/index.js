@@ -18,59 +18,64 @@ const getMobileOS = () => {
 };
 
 async function viewAR(mainModel) {
-  const os = getMobileOS();
-  if (os === "Android") {
-    const exporter = new GLTFExporter();
-    exporter.parse(
-      mainModel,
-      async function (result) {
-        if (result instanceof ArrayBuffer) {
-          const blob = new Blob([result], {
-            type: "application/octet-stream",
-          });
+  return new Promise(async (resolve, reject) => {
+    const os = getMobileOS();
+    if (os === "Android") {
+      const exporter = new GLTFExporter();
+      exporter.parse(
+        mainModel,
+        async function (result) {
+          if (result instanceof ArrayBuffer) {
+            const blob = new Blob([result], {
+              type: "application/octet-stream",
+            });
 
-          const ipify = await fetch("https://api.ipify.org?format=json");
-          const ip = await ipify.json();
+            const ipify = await fetch("https://api.ipify.org?format=json");
+            const ip = await ipify.json();
 
-          var fd = new FormData();
-          fd.append("upl", blob, `${ip.ip.replaceAll(".", "_")}.glb`);
-          const response = await fetch(`${API_BASE_URL}/api/upload`, {
-            method: "post",
-            body: fd,
-          });
-          const res = await response.json();
-          const link = document.getElementById("link");
-          // console.log(URL.createObjectURL(blob));
-          link.download = "scene.glb";
-          // const modelLink = `${window.location.href.split("/").slice(0, -1).join("/")}/scene.glb`
-          const modelLink = `${API_BASE_URL}/${res.filename}`;
-          // link.href = URL.createObjectURL(blob)
-          link.href = `intent://arvr.google.com/scene-viewer/1.0?file=${modelLink}#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=https://developers.google.com/ar;end;`;
-          // link.href = `intent://arvr.google.com/scene-viewer/1.0?file=${URL.createObjectURL(blob)}#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=https://developers.google.com/ar;end;`
-          link.click();
-        } else {
-          const output = JSON.stringify(result, null, 2);
-          console.log(output);
-          // saveString( output, 'scene.gltf' );
+            var fd = new FormData();
+            fd.append("upl", blob, `${ip.ip.replaceAll(".", "_")}.glb`);
+            const response = await fetch(`${API_BASE_URL}/api/upload`, {
+              method: "post",
+              body: fd,
+            });
+            const res = await response.json();
+            const link = document.getElementById("link");
+            // console.log(URL.createObjectURL(blob));
+            link.download = "scene.glb";
+            // const modelLink = `${window.location.href.split("/").slice(0, -1).join("/")}/scene.glb`
+            const modelLink = `${API_BASE_URL}/${res.filename}`;
+            // link.href = URL.createObjectURL(blob)
+            link.href = `intent://arvr.google.com/scene-viewer/1.0?file=${modelLink}#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=https://developers.google.com/ar;end;`;
+            // link.href = `intent://arvr.google.com/scene-viewer/1.0?file=${URL.createObjectURL(blob)}#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=https://developers.google.com/ar;end;`
+            link.click();
+            resolve();
+          } else {
+            const output = JSON.stringify(result, null, 2);
+            console.log(output);
+            reject();
+            // saveString( output, 'scene.gltf' );
+          }
+        },
+        {
+          binary: true,
         }
-      },
-      {
-        binary: true,
-      }
-    );
-  }
-  if (os === "iOS") {
-    const exporter = new USDZExporter();
-    const arraybuffer = await exporter.parse(mainModel);
-    const blob = new Blob([arraybuffer], {
-      type: "application/octet-stream",
-    });
+      );
+    }
+    if (os === "iOS") {
+      const exporter = new USDZExporter();
+      const arraybuffer = await exporter.parse(mainModel);
+      const blob = new Blob([arraybuffer], {
+        type: "application/octet-stream",
+      });
 
-    const link = document.getElementById("link");
-    link.download = "scene.usdz";
-    link.href = URL.createObjectURL(blob);
-    link.click();
-  }
+      const link = document.getElementById("link");
+      link.download = "scene.usdz";
+      link.href = URL.createObjectURL(blob);
+      link.click();
+      resolve();
+    }
+  });
 }
 
 export { getMobileOS, viewAR };

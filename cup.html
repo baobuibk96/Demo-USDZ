@@ -144,8 +144,10 @@
         ).texture;
 
         const viewARButton = document.getElementById("view-ar");
-        viewARButton.addEventListener("click", function () {
-          viewAR(mainModel);
+        viewARButton.addEventListener("click", async function () {
+          this.disabled = true;
+          await viewAR(mainModel);
+          this.disabled = false;
         });
 
         const dracoLoader = new DRACOLoader();
