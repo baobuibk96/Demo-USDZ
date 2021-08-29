@@ -122,6 +122,10 @@
         document.getElementById("qrcode_mug"),
         `${window.location.href.split("/").slice(0, -1).join("/")}/mug.html`
       );
+      new QRCode(
+        document.getElementById("qrcode_plate"),
+        `${window.location.href.split("/").slice(0, -1).join("/")}/plate.html`
+      );
     </script>
   </body>
 </html>
