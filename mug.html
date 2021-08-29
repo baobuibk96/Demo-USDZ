@@ -37,7 +37,9 @@
   </head>
 
   <body>
-
+    <div id="loader" class="absolute hidden w-full h-full bg-black bg-opacity-40 z-10 justify-center items-center">
+      <div class="loader"></div>
+    </div>
     <a style="font-size: 30px;text-decoration: none;" class="absolute left-2 top-0" href="index.html"
       >&#8592;</a
     >
@@ -131,8 +133,10 @@
         const viewARButton = document.getElementById( 'view-ar' );
         viewARButton.addEventListener( 'click', async function () {
           this.disabled = true
+          document.getElementById( 'loader' ).style.display = "flex"
           await viewAR(mainModel);
           this.disabled = false
+          document.getElementById( 'loader' ).style.display = "hidden"
         } );
 
         const dracoLoader = new DRACOLoader();

@@ -20,7 +20,21 @@ const getMobileOS = () => {
 function viewAR(mainModel) {
   return new Promise(async (resolve, reject) => {
     const os = getMobileOS();
-    if (os === "Android") {
+    // if (os === "Android") {
+
+    if (os === "iOS") {
+      const exporter = new USDZExporter();
+      const arraybuffer = await exporter.parse(mainModel);
+      const blob = new Blob([arraybuffer], {
+        type: "application/octet-stream",
+      });
+
+      const link = document.getElementById("link");
+      link.download = "scene.usdz";
+      link.href = URL.createObjectURL(blob);
+      link.click();
+      resolve();
+    } else {
       const exporter = new GLTFExporter();
       exporter.parse(
         mainModel,
@@ -30,11 +44,12 @@ function viewAR(mainModel) {
               type: "application/octet-stream",
             });
 
-            const ipify = await fetch("https://api.ipify.org?format=json");
-            const ip = await ipify.json();
+            // const ipify = await fetch("https://api.ipify.org?format=json");
+            // const ip = await ipify.json();
 
             var fd = new FormData();
-            fd.append("upl", blob, `${ip.ip.replaceAll(".", "_")}.glb`);
+            fd.append("upl", blob, `scene.glb`);
+            // fd.append("upl", blob, `${ip.ip.replaceAll(".", "_")}.glb`);
             const response = await fetch(`${API_BASE_URL}/api/upload`, {
               method: "post",
               body: fd,
@@ -46,7 +61,7 @@ function viewAR(mainModel) {
             // const modelLink = `${window.location.href.split("/").slice(0, -1).join("/")}/scene.glb`
             const modelLink = `${API_BASE_URL}/${res.filename}`;
             // link.href = URL.createObjectURL(blob)
-            link.href = `intent://arvr.google.com/scene-viewer/1.0?file=${modelLink}#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=https://developers.google.com/ar;end;`;
+            link.href = `intent://arvr.google.com/scene-viewer/1.0?file=${modelLink}&mode=ar_preferred#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=https://developers.google.com/ar;end;`;
             // link.href = `intent://arvr.google.com/scene-viewer/1.0?file=${URL.createObjectURL(blob)}#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=https://developers.google.com/ar;end;`
             link.click();
             resolve();
@@ -61,19 +76,6 @@ function viewAR(mainModel) {
           binary: true,
         }
       );
-    }
-    if (os === "iOS") {
-      const exporter = new USDZExporter();
-      const arraybuffer = await exporter.parse(mainModel);
-      const blob = new Blob([arraybuffer], {
-        type: "application/octet-stream",
-      });
-
-      const link = document.getElementById("link");
-      link.download = "scene.usdz";
-      link.href = URL.createObjectURL(blob);
-      link.click();
-      resolve();
     }
   });
 }
