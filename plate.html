@@ -88,6 +88,12 @@
           >
             Texture 3
           </button>
+          <button
+            id="change-cup"
+            class="border border-gray-500 rounded-md p-1 bg-white"
+          >
+            Change Cup
+          </button>
         </div>
       </div>
     </div>
@@ -126,6 +132,8 @@
       let textures = ["texture-1", "texture-2", "texture-3"];
       let loadedTextures = [];
       let mainTexture = null;
+      let cups = [];
+      let currentCup = null;
 
       init();
       //   render();
@@ -180,7 +188,9 @@
 
         function modelLoader(url) {
           return new Promise((resolve, reject) => {
-            loader.load(url, (data) => resolve(data), null, reject);
+            new GLTFLoader()
+              .setDRACOLoader(dracoLoader)
+              .load(url, (data) => resolve(data), null, reject);
           });
         }
 
@@ -249,31 +259,64 @@
             this.classList.add("active");
           });
 
-        loader.load("Cup_cotton.glb", async function (gltf) {
-          const texture = await textureLoader(
-            "models/cup_cotton/texture-3.jpg"
-          );
-          // gltf.scene.children[0].scale.set(0.08, 0.08, 0.08)
-          mainModel = gltf.scene;
+        document
+          .getElementById("change-cup")
+          .addEventListener("click", async function () {
+            const index = count % cups.length;
+            currentCup.removeFromParent();
+            currentCup = cups[index].clone();
 
-          mainTexture = mainModel.getObjectByName("Plate_2", true).material.map;
+            mainModel.children[0].attach(currentCup);
+            count += 1;
+          });
 
-          mainModel.getObjectByName("Cup_cotton", true).removeFromParent();
+        const models = await Promise.all([
+          modelLoader("models/cup_of_coffee/scene.gltf"),
+          modelLoader("models/cup_cotton/Cup_cotton.glb"),
+        ]);
 
-          scene.add(mainModel);
-          scene.remove(mainModel.getObjectByName("Plate_2", true));
+        const cupModel = models[0];
+        cupModel.scene.children[0].scale.set(0.1, 0.1, 0.1);
+        cups.push(cupModel.scene.clone());
 
-          const shadowMesh = createSpotShadowMesh();
-          shadowMesh.position.y = 0;
-          shadowMesh.position.z = 0;
-          // shadowMesh.scale.setScalar(2);
-          scene.add(shadowMesh);
+        const gltf = models[1];
+        // loader.load("Cup_cotton.glb", async function (gltf) {
+        const texture = await textureLoader("models/cup_cotton/texture-3.jpg");
+        // gltf.scene.children[0].scale.set(0.08, 0.08, 0.08)
+        mainModel = gltf.scene;
 
-          render();
+        mainTexture = mainModel.getObjectByName("Plate_2", true).material.map;
 
-          // USDZ
-          await createExportLink(gltf.scene);
-        });
+        currentCup = mainModel.getObjectByName("Cup_cotton", true);
+
+        cups[0].position.setY(-0.008);
+        cups[0].position.setZ(-0.018);
+        cups[0].position.setX(-0.005);
+        cups[0].children[0].children[0].children[0].material =
+          mainModel.getObjectByName("Plate_2", true).material;
+        // cups[0].children[0].children[0].children[0].material.map =
+        //   mainTexture;
+        // cups[0].position.set(
+        //   currentCup.position.clone().x,
+        //   currentCup.position.clone().y,
+        //   currentCup.position.clone().z
+        // );
+        cups.push(currentCup.clone());
+        // mainModel.getObjectByName("Cup_cotton", true).removeFromParent();
+
+        scene.add(mainModel);
+
+        const shadowMesh = createSpotShadowMesh();
+        shadowMesh.position.y = 0;
+        shadowMesh.position.z = 0;
+        // shadowMesh.scale.setScalar(2);
+        scene.add(shadowMesh);
+
+        render();
+
+        // USDZ
+        await createExportLink(gltf.scene);
+        // });
 
         const controls = new OrbitControls(camera, renderer.domElement);
         // controls.addEventListener("change", render); // use if there is no animation loop
