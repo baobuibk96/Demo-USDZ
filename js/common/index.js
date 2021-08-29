@@ -63,8 +63,8 @@ function viewAR(mainModel) {
             // link.href = URL.createObjectURL(blob)
             link.href = `intent://arvr.google.com/scene-viewer/1.0?file=${modelLink}&mode=ar_preferred#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=https://developers.google.com/ar;end;`;
             // link.href = `intent://arvr.google.com/scene-viewer/1.0?file=${URL.createObjectURL(blob)}#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=https://developers.google.com/ar;end;`
-            resolve();
             link.click();
+            resolve();
           } else {
             const output = JSON.stringify(result, null, 2);
             console.log(output);
