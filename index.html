@@ -114,18 +114,14 @@
           false
         );
       });
-      new QRCode(
-        document.getElementById("qrcode_cup"),
-        `${window.location.href.split("/").slice(0, -1).join("/")}/cup.html`
-      );
-      new QRCode(
-        document.getElementById("qrcode_mug"),
-        `${window.location.href.split("/").slice(0, -1).join("/")}/mug.html`
-      );
-      new QRCode(
-        document.getElementById("qrcode_plate"),
-        `${window.location.href.split("/").slice(0, -1).join("/")}/plate.html`
-      );
+      Array.from(document.getElementsByClassName("qrcode")).forEach((el) => {
+        new QRCode(
+          el,
+          `${window.location.href.split("/").slice(0, -1).join("/")}/${
+            el.id.split("_")[1]
+          }.html`
+        );
+      });
     </script>
   </body>
 </html>
