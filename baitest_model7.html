@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Demo AR - Cup</title>
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
+    />
+    <link type="text/css" rel="stylesheet" href="css/main.css" />
+    <link
+      href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        color: #444;
+        /* background: #eee; */
+      }
+      a {
+        color: #08f;
+      }
+      .colorPicker {
+        display: inline-block;
+        margin: 0 10px;
+      }
+      #info {
+        color: #222;
+      }
+      #view-ar {
+        position: absolute;
+        bottom: 15px;
+        left: calc(50% - 40px);
+      }
+      button.active {
+        background-color: blue;
+        color: white;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div
+      id="loader"
+      class="
+        absolute
+        hidden
+        w-full
+        h-full
+        bg-black bg-opacity-40
+        z-10
+        justify-center
+        items-center
+      "
+    >
+      <div class="loader"></div>
+    </div>
+    <a
+      style="font-size: 30px; text-decoration: none"
+      class="absolute left-2 top-0"
+      href="index.html"
+      >&#8592;</a
+    >
+    <div id="info">
+      <h1 class="text-xl uppercase">bai test model 7</h1>
+    </div>
+
+    <a id="link" rel="ar" href="" download="asset.usdz" class="ar">
+      <img src="" />
+    </a>
+    <button id="view-ar"><img width="100" src="images/arkit.png" /></button>
+
+    <script type="module">
+      import * as THREE from "https://cdn.skypack.dev/three@0.131.3";
+
+      // import { OrbitControls } from './jsm/controls/OrbitControls.js';
+      import { OrbitControls } from "https://cdn.skypack.dev/three@0.131.3/examples/jsm/controls/OrbitControls.js";
+      import { RoomEnvironment } from "https://cdn.skypack.dev/three@0.131.3/examples/jsm/environments/RoomEnvironment.js";
+
+      import { GLTFLoader } from "https://cdn.skypack.dev/three@0.131.3/examples/jsm/loaders/GLTFLoader.js";
+      import { USDZExporter } from "https://cdn.skypack.dev/three@0.131.3/examples/jsm/exporters/USDZExporter.js";
+
+      import { DRACOLoader } from "https://cdn.skypack.dev/three@0.131.3/examples/jsm/loaders/DRACOLoader.js";
+      import { getMobileOS, viewAR } from "./js/common/index.js";
+
+      let camera,
+        scene,
+        renderer,
+        mainModel,
+        normalWheel = [],
+        count = 0;
+      let listWheels = [
+        "normal",
+        "new-wheel.glb",
+        "wheel_GAZ_66_CGTraber.glb",
+        "wheel_Zil_CGTraber.glb",
+      ];
+      let listWheelModels = {};
+      let textures = ["texture-1", "texture-2", "texture-3"];
+      let loadedTextures = [];
+      let mainTexture = null;
+
+      const modelUrl = "models/bai test 1/model so 7.glb";
+
+      init();
+      //   render();
+
+      async function init() {
+        renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.outputEncoding = THREE.sRGBEncoding;
+        renderer.setAnimationLoop(render);
+        document.body.appendChild(renderer.domElement);
+
+        camera = new THREE.PerspectiveCamera(
+          45,
+          window.innerWidth / window.innerHeight,
+          0.0001,
+          200
+        );
+
+        // camera.up = new THREE.Vector3(0, 1, 0);
+        // green: y, red: x, blue: z
+        camera.position.set(0, 1.5, 4);
+
+        const pmremGenerator = new THREE.PMREMGenerator(renderer);
+
+        scene = new THREE.Scene();
+        scene.background = new THREE.Color(0xffffff);
+        // scene.background = new THREE.Color(0xa0a0a0);
+        // scene.fog = new THREE.Fog(0xa0a0a0, 10, 500);
+        var light = new THREE.DirectionalLight(0xffffff);
+        scene.add(light);
+
+        const ground = new THREE.Mesh(
+          new THREE.PlaneGeometry(1000, 1000),
+          new THREE.MeshPhongMaterial({ color: 0xf1f3f4, depthWrite: false })
+        );
+        ground.rotation.x = -Math.PI / 2;
+        ground.receiveShadow = true;
+        scene.add(ground);
+
+        scene.environment = pmremGenerator.fromScene(
+          new RoomEnvironment(),
+          0.04
+        ).texture;
+
+        const viewARButton = document.getElementById("view-ar");
+        viewARButton.addEventListener("click", async function () {
+          this.disabled = true;
+          document.getElementById("loader").style.display = "flex";
+          await viewAR(mainModel);
+          this.disabled = false;
+          document.getElementById("loader").style.display = "none";
+        });
+
+        const dracoLoader = new DRACOLoader();
+        dracoLoader.setDecoderPath(
+          //   "./node_modules/three/examples/js/libs/draco/gltf/"
+          "https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/js/libs/draco/gltf/"
+          //   "https://cdn.skypack.dev/three@0.131.3/examples/js/libs/draco/gltf/"
+        );
+
+        const loader = new GLTFLoader().setDRACOLoader(dracoLoader);
+
+        loader.load(modelUrl, async function (gltf) {
+          mainModel = gltf.scene;
+
+          scene.add(mainModel);
+
+          const box = new THREE.Box3().setFromObject(mainModel);
+          const size = box.getSize(new THREE.Vector3()).length();
+          const center = box.getCenter(new THREE.Vector3());
+
+          // camera.position.copy(center);
+          camera.position.y *= size / 2;
+          // camera.position.y += size / 5.0;
+          camera.position.z *= size / 2;
+          console.log(camera.position);
+          // camera.lookAt(center);
+
+          var axesHelper = new THREE.AxesHelper(15000);
+          scene.add(axesHelper);
+
+          scene.updateMatrixWorld(true);
+          scene.updateMatrix();
+          render();
+
+          const controls = new OrbitControls(camera, renderer.domElement);
+          controls.target.set(0, 0, 0);
+          controls.update();
+          // USDZ
+          await createExportLink(gltf.scene);
+        });
+
+        window.addEventListener("resize", onWindowResize);
+      }
+
+      async function createExportLink(model) {
+        // const exporter = new USDZExporter();
+        //   const arraybuffer = await exporter.parse(model || mainModel);
+        //   const blob = new Blob([arraybuffer], {
+        //     type: "application/octet-stream",
+        //   });
+        //   const link = document.getElementById("link");
+        //   link.href = URL.createObjectURL(blob);
+      }
+
+      function createSpotShadowMesh() {
+        const canvas = document.createElement("canvas");
+        canvas.width = 128;
+        canvas.height = 128;
+
+        const context = canvas.getContext("2d");
+        const gradient = context.createRadialGradient(
+          canvas.width / 2,
+          canvas.height / 2,
+          0,
+          canvas.width / 2,
+          canvas.height / 2,
+          canvas.width / 2
+        );
+        gradient.addColorStop(0.1, "rgba(130,130,130,1)");
+        gradient.addColorStop(1, "rgba(255,255,255,1)");
+
+        context.fillStyle = gradient;
+        context.fillRect(0, 0, canvas.width, canvas.height);
+
+        const shadowTexture = new THREE.CanvasTexture(canvas);
+
+        const geometry = new THREE.PlaneGeometry();
+        const material = new THREE.MeshBasicMaterial({
+          map: shadowTexture,
+          blending: THREE.MultiplyBlending,
+          toneMapped: false,
+        });
+
+        const mesh = new THREE.Mesh(geometry, material);
+        mesh.rotation.x = -Math.PI / 2;
+
+        return mesh;
+      }
+
+      function onWindowResize() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+
+        renderer.setSize(window.innerWidth, window.innerHeight);
+
+        render();
+      }
+
+      //
+
+      function render() {
+        renderer.render(scene, camera);
+      }
+    </script>
+  </body>
+</html>
