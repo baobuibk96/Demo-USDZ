@@ -80,4 +80,26 @@ function viewAR(mainModel) {
   });
 }
 
-export { getMobileOS, viewAR };
+const exportCSV = (data) => {
+  const rows = [["STT", "Name", "Type", "Texture"], ...data];
+
+  let csvContent =
+    "data:text/csv;charset=utf-8," + rows.map((e) => e.join(",")).join("\n");
+  var encodedUri = encodeURI(csvContent);
+  var link = document.createElement("a");
+  link.setAttribute("href", encodedUri);
+  link.setAttribute(
+    "download",
+    `${data
+      .map((item) => item[1])
+      .join("_")
+      .split(" ")
+      .join("_")}.csv`
+  );
+  document.body.appendChild(link); // Required for FF
+
+  link.click();
+  link.remove();
+};
+
+export { getMobileOS, viewAR, exportCSV };

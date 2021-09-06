@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Demo AR - Plate</title>
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
+    />
+    <link type="text/css" rel="stylesheet" href="css/main.css" />
+    <link
+      href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        color: #444;
+        /* background: #eee; */
+      }
+      a {
+        color: #08f;
+      }
+      .colorPicker {
+        display: inline-block;
+        margin: 0 10px;
+      }
+      #info {
+        color: #222;
+      }
+      #view-ar {
+        position: absolute;
+        bottom: 15px;
+        left: calc(50% - 40px);
+      }
+      button.active {
+        background-color: blue;
+        color: white;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div
+      id="loader"
+      class="
+        absolute
+        hidden
+        w-full
+        h-full
+        bg-black bg-opacity-40
+        z-10
+        justify-center
+        items-center
+      "
+    >
+      <div class="loader"></div>
+    </div>
+    <a
+      style="font-size: 30px; text-decoration: none"
+      class="absolute left-2 top-0"
+      href="index.html"
+      >&#8592;</a
+    >
+    <div id="info">
+      <h1 class="text-xl uppercase">Plate</h1>
+
+      <div class="flex mt-3">
+        <div class="flex mx-auto space-x-3 items-center">
+          <!-- <span class="colorPicker"><input id="body-color" type="color" value="#ff0000"></input><br/>Body</span>
+              <span class="colorPicker"><input id="details-color" type="color" value="#ffffff"></input><br/>Details</span>
+              <span class="colorPicker"><input id="glass-color" type="color" value="#ffffff"></input><br/>Glass</span> -->
+          <button
+            id="texture-1"
+            class="
+              texture
+              border border-gray-500
+              rounded-md
+              p-1
+              bg-white
+              active
+            "
+          >
+            Texture 1
+          </button>
+          <button
+            id="texture-2"
+            class="texture border border-gray-500 rounded-md p-1 bg-white"
+          >
+            Texture 2
+          </button>
+          <button
+            id="texture-3"
+            class="texture border border-gray-500 rounded-md p-1 bg-white"
+          >
+            Texture 3
+          </button>
+          <select
+            name="cars"
+            id="cup_select"
+            class="border border-black rounded-md p-1"
+          >
+            <option value="none">None</option>
+            <option value="mug">Mug</option>
+            <option value="cup" selected="selected">Cup</option>
+            <option value="no3">No 3</option>
+            <option value="no6">No 6</option>
+            <option value="baitest4">Model 4</option>
+            <option value="baitest7">Model 7</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <a id="link" rel="ar" href="" download="asset.usdz" class="ar">
+      <img src="" />
+    </a>
+
+    <button
+      id="export"
+      href=""
+      download=""
+      class="absolute top-3 right-3 export"
+    >
+      <img src="images/export.png" width="30" />
+    </button>
+    <button id="view-ar"><img width="100" src="images/arkit.png" /></button>
+
+    <script type="module">
+      import * as THREE from "https://cdn.skypack.dev/three@0.131.3";
+
+      // import { OrbitControls } from './jsm/controls/OrbitControls.js';
+      import { OrbitControls } from "https://cdn.skypack.dev/three@0.131.3/examples/jsm/controls/OrbitControls.js";
+      import { RoomEnvironment } from "https://cdn.skypack.dev/three@0.131.3/examples/jsm/environments/RoomEnvironment.js";
+
+      import { GLTFLoader } from "https://cdn.skypack.dev/three@0.131.3/examples/jsm/loaders/GLTFLoader.js";
+      import { USDZExporter } from "https://cdn.skypack.dev/three@0.131.3/examples/jsm/exporters/USDZExporter.js";
+
+      import { DRACOLoader } from "https://cdn.skypack.dev/three@0.131.3/examples/jsm/loaders/DRACOLoader.js";
+      import { getMobileOS, viewAR, exportCSV } from "./js/common/index.js";
+
+      let camera,
+        scene,
+        renderer,
+        mainModel,
+        normalWheel = [],
+        count = 0;
+      let listWheelModels = {};
+      let textures = ["texture-1", "texture-2", "texture-3"];
+      let loadedTextures = [];
+      let mainTexture = null;
+      let cups = {
+        cup: {
+          url: "models/cup_cotton/Cup_cotton.glb",
+        },
+        mug: {
+          url: "models/cup_of_coffee/scene.gltf",
+          scale: 0.1,
+          position: [-0.005, -0.008, -0.018],
+        },
+        no3: {
+          url: "models/No3_No6/No3/No3_v001.glb",
+          scale: 0.1,
+        },
+        no6: {
+          url: "models/No3_No6/No6/No6_v001.glb",
+          scale: 0.011,
+          position: [0, 0, -0.62],
+        },
+        baitest4: {
+          url: "models/bai test 1/model so 4.glb",
+          scale: 0.001,
+          position: [0, 0, 0],
+        },
+        baitest7: {
+          url: "models/bai test 1/model so 7.glb",
+          scale: 0.002,
+          position: [0, 0, 0],
+        },
+      };
+      let currentCup = null;
+
+      init();
+      //   render();
+
+      async function init() {
+        renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.outputEncoding = THREE.sRGBEncoding;
+        renderer.setAnimationLoop(render);
+        document.body.appendChild(renderer.domElement);
+
+        camera = new THREE.PerspectiveCamera(
+          45,
+          window.innerWidth / window.innerHeight,
+          0.01,
+          20
+        );
+        // camera.position.set(-2.5, 0.6, 3.0);
+        // camera.position.set( 4.25, 1.4, -7.5 );
+        // camera.position.set(0.7, 0.3, 0);
+        camera.position.set(0, 0.3, 0.4);
+
+        const pmremGenerator = new THREE.PMREMGenerator(renderer);
+
+        scene = new THREE.Scene();
+        scene.background = new THREE.Color(0xffffff);
+        scene.environment = pmremGenerator.fromScene(
+          new RoomEnvironment(),
+          0.04
+        ).texture;
+
+        const viewARButton = document.getElementById("view-ar");
+        viewARButton.addEventListener("click", async function () {
+          this.disabled = true;
+          document.getElementById("loader").style.display = "flex";
+          await viewAR(mainModel);
+          this.disabled = false;
+          document.getElementById("loader").style.display = "none";
+        });
+
+        const dracoLoader = new DRACOLoader();
+        dracoLoader.setDecoderPath(
+          //   "./node_modules/three/examples/js/libs/draco/gltf/"
+          "https://raw.githubusercontent.com/mrdoob/three.js/dev/examples/js/libs/draco/gltf/"
+          //   "https://cdn.skypack.dev/three@0.131.3/examples/js/libs/draco/gltf/"
+        );
+
+        const loader = new GLTFLoader()
+          .setDRACOLoader(dracoLoader)
+          .setPath("models/cup_cotton/");
+
+        function modelLoader(url) {
+          return new Promise((resolve, reject) => {
+            new GLTFLoader()
+              .setDRACOLoader(dracoLoader)
+              .load(url, (data) => resolve(data), null, reject);
+          });
+        }
+
+        function textureLoader(url) {
+          return new Promise((resolve, reject) => {
+            const _loader = new THREE.TextureLoader();
+            _loader.load(
+              // resource URL
+              url,
+
+              // onLoad callback
+              function (texture) {
+                resolve(texture);
+              },
+
+              // onProgress callback currently not supported
+              undefined,
+
+              // onError callback
+              function (err) {
+                console.error("An error happened.");
+              }
+            );
+          });
+        }
+
+        loadedTextures = await Promise.all(
+          textures.map((item) => {
+            return textureLoader(`models/cup_cotton/${item}.jpg`);
+          })
+        );
+
+        document
+          .getElementById("texture-1")
+          .addEventListener("click", async function () {
+            const texture = loadedTextures[0];
+            mainTexture.image = texture.image;
+            mainTexture.needsUpdate = true;
+            document
+              .getElementsByClassName("active")[0]
+              .classList.remove("active");
+            this.classList.add("active");
+          });
+
+        document
+          .getElementById("texture-2")
+          .addEventListener("click", async function () {
+            const texture = loadedTextures[1];
+            mainTexture.image = texture.image;
+            mainTexture.needsUpdate = true;
+            document
+              .getElementsByClassName("active")[0]
+              .classList.remove("active");
+            this.classList.add("active");
+          });
+
+        document
+          .getElementById("texture-3")
+          .addEventListener("click", async function () {
+            const texture = loadedTextures[2];
+            mainTexture.image = texture.image;
+            mainTexture.needsUpdate = true;
+            document
+              .getElementsByClassName("active")[0]
+              .classList.remove("active");
+            this.classList.add("active");
+          });
+
+        // document
+        //   .getElementById("change-cup")
+        //   .addEventListener("click", async function () {
+        //     const index = count % cups.length;
+        //     currentCup.removeFromParent();
+        //     currentCup = cups[index].clone();
+
+        //     mainModel.children[0].attach(currentCup);
+        //     count += 1;
+        //   });
+
+        document
+          .getElementById("cup_select")
+          .addEventListener("change", (e) => {
+            console.log(cups);
+            console.log(e.target.value);
+            currentCup.removeFromParent();
+            if (cups[e.target.value]) {
+              currentCup = cups[e.target.value].model.clone();
+              mainModel.children[0].attach(currentCup);
+            }
+          });
+
+        document
+          .getElementById("export")
+          .addEventListener("click", async function () {
+            console.log(exportCSV);
+            console.log(document.querySelector(".texture.active").innerHTML);
+            const cupSelect = document.getElementById("cup_select");
+            const data = [
+              [
+                "1",
+                "Plate",
+                "plate",
+                document.querySelector(".texture.active").innerText,
+              ],
+              ...(cupSelect.value !== "none"
+                ? [
+                    [
+                      "2",
+                      cupSelect.options[cupSelect.selectedIndex].text,
+                      "cup",
+                      "",
+                    ],
+                  ]
+                : []),
+            ];
+            await exportCSV(data);
+            console.log(data);
+          });
+
+        Object.keys(cups).forEach((item) => (cups[item].name = item));
+        const arrCups = Object.values(cups);
+
+        const models = await Promise.all(
+          arrCups.map((item) => modelLoader(item.url))
+        );
+        console.log(models);
+        arrCups.map((item, index) => {
+          console.log();
+          item.model = models[index].scene.clone();
+          item.model.children[0].scale.set(
+            item.scale || 1,
+            item.scale || 1,
+            item.scale || 1
+          );
+          if (item.position)
+            item.model.position.set(
+              item.position[0],
+              item.position[1],
+              item.position[2]
+            );
+          return item;
+        });
+
+        cups = arrCups.reduce((obj, item) => {
+          obj[item.name] = item;
+          return obj;
+        }, {});
+
+        // const cupModel = models[0];
+        // cupModel.scene.children[0].scale.set(0.1, 0.1, 0.1);
+        // cups.push(cupModel.scene.clone());
+
+        const gltf = cups.cup.model.clone();
+        console.log(gltf);
+        // loader.load("Cup_cotton.glb", async function (gltf) {
+        const texture = await textureLoader("models/cup_cotton/texture-3.jpg");
+        // gltf.scene.children[0].scale.set(0.08, 0.08, 0.08)
+        mainModel = gltf;
+
+        mainTexture = mainModel.getObjectByName("Plate_2", true).material.map;
+
+        currentCup = mainModel.getObjectByName("Cup_cotton", true);
+
+        // cups[0].position.setY(-0.008);
+        // cups[0].position.setZ(-0.018);
+        // cups[0].position.setX(-0.005);
+        // cups[0].children[0].children[0].children[0].material =
+        //   mainModel.getObjectByName("Plate_2", true).material;
+        // cups[0].children[0].children[0].children[0].material.map =
+        //   mainTexture;
+        // cups[0].position.set(
+        //   currentCup.position.clone().x,
+        //   currentCup.position.clone().y,
+        //   currentCup.position.clone().z
+        // );
+        cups.cup.model = currentCup.clone();
+
+        // mainModel.getObjectByName("Cup_cotton", true).removeFromParent();
+
+        scene.add(mainModel);
+
+        const shadowMesh = createSpotShadowMesh();
+        shadowMesh.position.y = 0;
+        shadowMesh.position.z = 0;
+        // shadowMesh.scale.setScalar(2);
+        scene.add(shadowMesh);
+
+        var axesHelper = new THREE.AxesHelper(15000);
+        scene.add(axesHelper);
+
+        render();
+
+        // USDZ
+        await createExportLink(gltf.scene);
+        // });
+
+        const controls = new OrbitControls(camera, renderer.domElement);
+        // controls.addEventListener("change", render); // use if there is no animation loop
+        // controls.minDistance = 2;
+        // controls.maxDistance = 10;
+        controls.target.set(0, 0, 0);
+        // controls.target.set(0, -0.15, -0.2);
+        // controls.target.set( 0, 0.5, 0 );
+        controls.update();
+
+        window.addEventListener("resize", onWindowResize);
+      }
+
+      async function createExportLink(model) {
+        // const exporter = new USDZExporter();
+        //   const arraybuffer = await exporter.parse(model || mainModel);
+        //   const blob = new Blob([arraybuffer], {
+        //     type: "application/octet-stream",
+        //   });
+        //   const link = document.getElementById("link");
+        //   link.href = URL.createObjectURL(blob);
+      }
+
+      // async function viewAR() {
+      //   const exporter = new USDZExporter();
+      //   const arraybuffer = await exporter.parse(mainModel);
+      //   const blob = new Blob([arraybuffer], {
+      //     type: "application/octet-stream",
+      //   });
+
+      //   const link = document.getElementById("link");
+      //   link.href = URL.createObjectURL(blob);
+      //   link.click();
+      // }
+
+      function createSpotShadowMesh() {
+        const canvas = document.createElement("canvas");
+        canvas.width = 128;
+        canvas.height = 128;
+
+        const context = canvas.getContext("2d");
+        const gradient = context.createRadialGradient(
+          canvas.width / 2,
+          canvas.height / 2,
+          0,
+          canvas.width / 2,
+          canvas.height / 2,
+          canvas.width / 2
+        );
+        gradient.addColorStop(0.1, "rgba(130,130,130,1)");
+        gradient.addColorStop(1, "rgba(255,255,255,1)");
+
+        context.fillStyle = gradient;
+        context.fillRect(0, 0, canvas.width, canvas.height);
+
+        const shadowTexture = new THREE.CanvasTexture(canvas);
+
+        const geometry = new THREE.PlaneGeometry();
+        const material = new THREE.MeshBasicMaterial({
+          map: shadowTexture,
+          blending: THREE.MultiplyBlending,
+          toneMapped: false,
+        });
+
+        const mesh = new THREE.Mesh(geometry, material);
+        mesh.rotation.x = -Math.PI / 2;
+
+        return mesh;
+      }
+
+      function onWindowResize() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+
+        renderer.setSize(window.innerWidth, window.innerHeight);
+
+        render();
+      }
+
+      //
+
+      function render() {
+        renderer.render(scene, camera);
+      }
+    </script>
+  </body>
+</html>
