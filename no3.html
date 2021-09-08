@@ -189,7 +189,7 @@
           render();
 
           const controls = new OrbitControls(camera, renderer.domElement);
-          controls.target.set(0, 0, 0);
+          controls.target.set(0, 0.25, 0);
           controls.update();
           // USDZ
           await createExportLink(gltf.scene);
