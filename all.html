@@ -112,7 +112,7 @@
       let camera,
         scene,
         renderer,
-        mainModel,
+        mainModel = new THREE.Group(),
         normalWheel = [],
         count = 0;
       let listWheels = [
@@ -305,7 +305,7 @@
             // console.log(modelUrls[index].material.color.getHexString());
           }
           // console.log(modelUrls[index].name, mainObject);
-          scene.add(mainObject);
+          mainModel.add(mainObject)
 
           // const box = new THREE.Box3().setFromObject(mainObject);
           // const size = box.getSize(new THREE.Vector3()).length();
@@ -318,6 +318,8 @@
           // scene.updateMatrix();
         });
 
+        scene.add(mainModel);
+
         modelUrls.forEach((item) => {
           document
             .getElementById(item.name)
@@ -329,7 +331,7 @@
         const controls = new OrbitControls(camera, renderer.domElement);
         controls.target.set(0, 0, 0);
         controls.update();
-
+        // console.log(scene);
         render();
 
         // loader.load(modelUrl, async function (gltf) {
