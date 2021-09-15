@@ -79,6 +79,22 @@
       <img src="" />
     </a>
     <button id="view-ar"><img width="100" src="images/arkit.png" /></button>
+    <button
+      id="export"
+      href=""
+      download=""
+      class="absolute top-3 right-3 export"
+    >
+      <img src="images/export.png" width="30" />
+    </button>
+    <div class="absolute right-2 top-1/2 transform -translate-y-1/2 space-y-3">
+      <div class="flex items-center space-x-2 justify-end"><span> eic0843</span><input id="eic0843" type="color" value="#ffffff"></input></div>
+      <div class="flex items-center space-x-2 justify-end"><span> eic0121</span><input id="eic0121" type="color" value="#ffffff"></input></div>
+      <div class="flex items-center space-x-2 justify-end"><span> eic0601</span><input id="eic0601" type="color" value="#ffffff"></input></div>
+      <div class="flex items-center space-x-2 justify-end"><span> eic0123</span><input id="eic0123" type="color" value="#ffffff"></input></div>
+      <!-- <div class="flex items-center space-x-2"><span> eic0363</span><input id="eic0363" type="color" value="#ffffff"></input></div> -->
+      <div class="flex items-center space-x-2 justify-end"><span> tsu0114</span><input id="tsu0114" type="color" value="#ffffff"></input></div>
+    </div>
 
     <script type="module">
       import * as THREE from "https://cdn.skypack.dev/three@0.131.3";
@@ -91,7 +107,7 @@
       import { USDZExporter } from "https://cdn.skypack.dev/three@0.131.3/examples/jsm/exporters/USDZExporter.js";
 
       import { DRACOLoader } from "https://cdn.skypack.dev/three@0.131.3/examples/jsm/loaders/DRACOLoader.js";
-      import { getMobileOS, viewAR } from "./js/common/index.js";
+      import { getMobileOS, viewAR, exportCSV } from "./js/common/index.js";
 
       let camera,
         scene,
@@ -112,24 +128,52 @@
 
       const modelUrls = [
         {
+          name: "eic0121",
+          type: "",
           url: "models/3D Models/eic0121/eic0121.glb",
           position: [1, 0.035, 0.6],
           rotation: [0, -Math.PI / 2 - Math.PI / 3, 0],
+          scale: [1.1, 1.1, 1.1],
+          materialObj: "Plane004"
         },
         {
+          name: "eic0123",
+          type: "",
           url: "models/3D Models/eic0123/eic0123.glb",
           position: [-1, 0.035, -1],
+          materialObj: "Sphere"
         },
         {
+          name: "eic0601",
+          type: "",
           url: "models/3D Models/eic0601/eic0601.glb",
           position: [1, 0.035, -1],
           scale: [6, 6, 6],
+          materialObj: "Cylinder001_1"
         },
         {
-          url: "models/3D Models/eic0843/eic0843.glb",
-          position: [0, 0.035, 0],
+          name: "eic0363",
+          type: "",
+          url: "models/3D Models/No6/No6_v001.glb",
+          position: [-1, 0.035, 0.4],
+          scale: [0.08, 0.08, 0.08],
+          rotation: [0, Math.PI / 6, 0],
+          // materialObj: "Plane004"
         },
-        { url: "models/3D Models/stu0114/stu0114.glb", position: [0, 0, 0] },
+        {
+          name: "eic0843",
+          type: "",
+          url: "models/3D Models/eic0843/eic0843.glb",
+          position: [0, 0.04, 0],
+          materialObj: "Cylinder001"
+        },
+        { 
+          name: "tsu0114", 
+          type: "",
+          url: "models/3D Models/stu0114/stu0114.glb", 
+          position: [0, 0, 0],
+          materialObj: "Tessellation"
+        },
       ];
 
       init();
@@ -202,6 +246,16 @@
         //       .material.color.set(this.value);
         //   });
 
+        document
+          .getElementById("export")
+          .addEventListener("click", async function () {
+            const data = [];
+            modelUrls.forEach((item, index) => {
+              data.push([index + 1, item.name, item.type, '#'+item.material?.color?.getHexString()])
+            })
+            await exportCSV(data);
+          });
+
         const dracoLoader = new DRACOLoader();
         dracoLoader.setDecoderPath(
           //   "./node_modules/three/examples/js/libs/draco/gltf/"
@@ -246,7 +300,11 @@
             mainObject.rotation.y += modelUrls[index].rotation[1];
             mainObject.rotation.z += modelUrls[index].rotation[2];
           }
-          console.log(mainObject);
+          if(modelUrls[index].materialObj) {
+            modelUrls[index].material = mainObject.getObjectByName(modelUrls[index].materialObj).material
+            // console.log(modelUrls[index].material.color.getHexString());
+          }
+          // console.log(modelUrls[index].name, mainObject);
           scene.add(mainObject);
 
           // const box = new THREE.Box3().setFromObject(mainObject);
@@ -259,6 +317,14 @@
           // scene.updateMatrixWorld(true);
           // scene.updateMatrix();
         });
+
+        modelUrls.forEach((item) => {
+          document
+            .getElementById(item.name)
+            ?.addEventListener("input", async function () {
+              item.material.color.set(this.value);
+            });
+        })
 
         const controls = new OrbitControls(camera, renderer.domElement);
         controls.target.set(0, 0, 0);
